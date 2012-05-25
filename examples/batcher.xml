@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="Batch" name="batcher.xml">
+<target name="Batch">
+<ant antfile="examples\javascript.xml" target="js.theDefaultTarget"/>
+<ant antfile="examples\javascript.xml" target="x.exec"/>
+</target>
+</project>

@@ -1,0 +1,81 @@
+<project name="JavaScript" default="js.theDefaultTarget">
+
+<target name="js.simpletest1" description="simple test #1">
+ <script language="javascript">
+   self.log("java script test #1");
+ </script>
+</target>
+
+<target name="js.simpletest2" description="simple test #2">
+ <script language="javascript">
+   self.log("java script test #2");
+ </script>
+</target>
+
+<target name="js.theDefaultTarget" description="this is the default target">
+ <script language="javascript">
+   self.log("do nothing");
+ </script>
+</target>
+
+<target name="x.exec">
+ <exec executable="notepad" />
+</target>
+
+<target name="js.timer" description="timer - display date (each 5 seconds)">
+ <script language="javascript">
+   self.log(new Date());
+   t = project.createTask("sleep");
+	 t.setSeconds(5);
+	 t.perform();
+ </script>
+</target>
+	
+<target name="js.long.task.10s">
+<script language="javascript"><![CDATA[
+	for(i=0; i < 10;i++){
+	//http://www.jajakarta.org/ant/ant-1.6.1/docs/en/manual/api/org/apache/tools/ant/taskdefs/Sleep.html
+	t = project.createTask("sleep");
+	t.setSeconds(1);
+	t.perform();
+	//self.log(i + "s");
+	}
+]]> 	
+</script>
+</target>
+
+<target name="js.long.task.20s">
+<script language="javascript"><![CDATA[
+	for(i=0; i < 20;i++){
+	//http://www.jajakarta.org/ant/ant-1.6.1/docs/en/manual/api/org/apache/tools/ant/taskdefs/Sleep.html
+	t = project.createTask("sleep");
+	t.setSeconds(1);
+	t.perform();
+	//self.log(i + "s");
+	}
+]]> 	
+</script>
+</target>
+
+<target name="js.fails.after.5seconds">
+<scriptdef language="javascript" name="myscr"><![CDATA[
+    // Exit http://cupi2.uniandes.edu.co/web/manualAnt/manual/api/org/apache/tools/ant/taskdefs/Exit.html
+    importClass(org.apache.tools.ant.taskdefs.Exit);
+
+	for(i=0; i < 5;i++){
+	//http://www.jajakarta.org/ant/ant-1.6.1/docs/en/manual/api/org/apache/tools/ant/taskdefs/Sleep.html
+	t = project.createTask("sleep");
+	t.setSeconds(1);
+	t.perform();
+	}
+]]> 	
+</scriptdef>
+<myscr />
+<fail message="failed!" />
+</target>
+
+<target name="js.fail">
+   <fail message="always fail" />
+</target>
+
+</project>

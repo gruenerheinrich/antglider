@@ -1,0 +1,65 @@
+<project name="ElementSetTask" default="test">
+    <target name="testdef">
+        <property name="testpath" value="${ant.library.dir}/centauron.jar;${ant.library.dir}/jdom.jar;${ant.library.dir}/jacob.jar"/>
+        <taskdef resource="centauron/anttest.properties" classpath="${testpath}"/>
+        <taskdef resource="centauron/microstation/antms.properties" classpath="${testpath}"/>
+    </target>
+    <target name="test" depends="testdef">
+    	<loglevel level="debug"/>
+        <testsuite name="Test" runcases="A"  failonerror="true">
+            <testinit initeachtest="false">
+                <!--<copy file="${basedir}/in/linie.dgn" tofile="${basedir}/linie.dgn" overwrite="true"/>-->
+                <ms_init startfile="work/elementset.dgn" handshakedir="D:/testsuite/handshaker" forcerestart="true"/>
+            	<!--<dialogbox optiontype="ok" message="press"/>-->
+            	<ms_memory mode="init" file="work/memoryleaks.txt"/>            	
+            </testinit>
+        	<testdeinit executeonfail="true">
+        		<ms_memory mode="deinit"/>
+        	</testdeinit>
+            <testdeinit executeonfail="false" deiniteachtest="false">
+                <!--<ms_quit/>-->
+            </testdeinit>
+            <testcase name="A" ontrue="showok" onfalse="showpro">
+                <testcheck>
+                    <mstest_elementcount equals="10">
+                            <ms_elementset>                            	
+                                <!--<ms_level identifier="code">11</ms_level>-->
+                            	<ms_color>1</ms_color>
+                            </ms_elementset>
+                    </mstest_elementcount>
+                </testcheck>           
+            </testcase>
+            <testcase name="B" ontrue="showok" onfalse="showpro">
+                <testcheck>
+                    <mstest_elementcount equals="10">
+                        <ms_elementsetunion mode="or" property="peter">
+                            <ms_elementset>
+                                <ms_level>Level 1</ms_level>
+                            </ms_elementset>
+                            <ms_elementset>
+                                <ms_level>Level 2</ms_level>
+                            </ms_elementset>
+                            <ms_elementset>
+                                <ms_level>Level 4</ms_level>
+                            </ms_elementset>                            
+                        </ms_elementsetunion>                                           
+                    </mstest_elementcount>
+                </testcheck>           
+            </testcase>
+            <testcase name="C" ontrue="showok" onfalse="showpro">
+                <testcheck>
+                </testcheck>           
+            </testcase>                 
+        	
+        </testsuite>
+    </target>
+    <target name="showok">
+        <echo message="HURRA"/>
+    	<echo message="${peter}"/>
+    </target>
+    <target name="showpro">
+        <echo message="BÄH"/>
+        <echo message="${peter}"/>
+    </target>    
+	
+</project>

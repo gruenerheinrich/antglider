@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+<panel caption="test" icon="myicon.png">
+    <buildfile>javascript.xml</buildfile>
+</panel>
+</config>
