@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,6 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
@@ -83,6 +86,7 @@ public class AntRunner extends JFrame {
 	private ButtonGroup saveoptiongroup;
 	private double m_tempdivider;
 	private int m_savemodus;
+	private boolean m_configfilechanged;
 	public AntRunner() throws Exception {
 		m_factory=new AntRunnerActionFactory(this);
 		shortcutpanel=new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
@@ -251,7 +255,8 @@ public class AntRunner extends JFrame {
 		if (m_configfile.exists()) {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(filename);
+			System.out.println("READ :" + m_configfile.getAbsolutePath());
+			Document doc = builder.parse(m_configfile.getAbsolutePath());
 			NodeList panelnodes=	doc.getElementsByTagName("panel");
 			for (int i=0;i<panelnodes.getLength();i++) {
 				Element panelelement=(Element)panelnodes.item(i);
@@ -287,7 +292,7 @@ public class AntRunner extends JFrame {
 							String fname=ce.getAttribute("buildfile");
 							File ff;
 							if (!FileUtils.isAbsolutePath(fname)) {
-								ff=new File(this.getConfigDir(),fname);
+								ff=FileUtility.getAbsolutePath(fname,this.getConfigDir());
 							} else {
 								ff=new File(fname);
 							}
@@ -308,9 +313,7 @@ public class AntRunner extends JFrame {
 	}
 	private void setConfigFile(File file) {
 		m_configfile=file;
-		String name=m_configfile.getPath();
-		if (!m_configfile.exists()) name=name+" (new)";
-		this.setTitle("AntRunner - "+name);
+		this.refreshTitle();
 		
 	}
 
@@ -349,6 +352,8 @@ public class AntRunner extends JFrame {
 		
 		transformer.transform(source, result);
 		this.setConfigFile(m_configfile);
+		m_configfilechanged=false;
+		this.refreshTitle();
 	}
 	public void saveProperties() throws Exception {
 		Rectangle r=this.getBounds();
@@ -373,6 +378,14 @@ public class AntRunner extends JFrame {
 		
 		myProperties.put("batchview.modus",Integer.toString(batchview.getModus()));
 		
+		
+		myProperties.put("application.savemode",Integer.toString(this.getSaveModus()));
+	
+		if (batchview.getCurrentFile()!=null) {
+			myProperties.put("application.batchfile",batchview.getCurrentFile().getAbsolutePath());
+		} else {
+			myProperties.remove("application.batchfile");
+		}
 		
 		myProperties.put("application.divider",Double.toString(getDividerPercentage()));		
 		
@@ -424,10 +437,25 @@ public class AntRunner extends JFrame {
 		batchview.setModus(Integer.parseInt(mode));
 		Utility.setButtonGroupIndex(batchgroup,Integer.parseInt(mode));
 		
-
+		//LAST BATCH FILE
+		String fn=myProperties.getProperty("application.batchfile",null);
+		if (fn!=null) {
+			File f=new File(fn);
+			if (f.exists()) {
+				batchview.openFile(f);
+			}
+		}
+		//SAVE OPTIONS
+		int savemode=Integer.parseInt(myProperties.getProperty("application.savemode","0"));
+		this.setSaveModus(savemode);
+		Utility.setButtonGroupIndex(saveoptiongroup,savemode);
+		
+		
 		//DIVIDER POSITION
 		String div=myProperties.getProperty("application.divider", "0.6");
-		mainpane.setDividerLocation(Double.parseDouble(div));
+		System.out.println("SET DIVIDER:"+Double.parseDouble(div));
+		int idiv=(int)((double)this.getWidth()*Double.parseDouble(div));
+		mainpane.setDividerLocation(idiv);
 		
 	}
 	
@@ -451,8 +479,9 @@ public class AntRunner extends JFrame {
 				ar.initConfigFile(args[0]);
 			}
 			ar.loadProperties();
-			ar.resetLast();
+			
 			ar.setVisible(true);
+			ar.resetLast();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -541,6 +570,30 @@ public class AntRunner extends JFrame {
 	public void setSaveModus(int mode) {
 		m_savemodus=mode;
 		
+	}
+
+	public void fileChanged() {
+		this.m_configfilechanged=true;
+		this.refreshTitle();
+	}
+
+	private void refreshTitle() {
+		String name=m_configfile.getPath();
+		if (!m_configfile.exists()) name=name+" (new)";
+		String title="AntRunner - "+name;
+		if (m_configfilechanged) {
+			title=title+" *";
+		}
+		this.setTitle(title);
+	}
+	public void askforSaveAndQuit() throws Exception {
+		if (m_configfilechanged) {
+			int answer=JOptionPane.showConfirmDialog(this, "config file has been modified! Save?", "AntRunner",JOptionPane.YES_NO_CANCEL_OPTION);
+			if (answer==JOptionPane.CANCEL_OPTION) return;
+			if (answer==JOptionPane.YES_OPTION) this.saveConfigFile(null);
+		}
+		this.saveProperties();
+		System.exit(0);		
 	}
 
 

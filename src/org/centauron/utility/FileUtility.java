@@ -57,4 +57,7 @@ public class FileUtility {
 		s = matchPathLists(homelist,filelist);
 		return s;
 	}
+	public static File getAbsolutePath(String fname, File dir) {
+		return new File(dir,fname);
+	}
 }

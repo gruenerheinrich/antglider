@@ -95,7 +95,7 @@ public class AntRunnerPanel extends JPanel {
 		this.add("Center",new JScrollPane(tree));
 		this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		tree.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				try {
 					if (e.getButton()==MouseEvent.BUTTON3) {
 						
@@ -163,13 +163,14 @@ public class AntRunnerPanel extends JPanel {
 	
 	public void addTarget(File file,String caption,String targetname) {
 		AntRunnerNode fnode=new AntRunnerNode(this.antrunner,this,targetname+" ["+caption+"]" ,AntRunnerNode.MODE_STANDALONETARGET);
-		fnode.setBuildFile(file);
+		fnode.setBuildFile(file.getAbsoluteFile());
 		fnode.setTargetName(targetname);		
 		rootNode.add(fnode);
 		reloadTree();
 		
 	}
 	public boolean addDir(File dir,String filterMask) {
+		this.antrunner.fileChanged();
 		return addDir(dir,filterMask,null);
 	}
 	

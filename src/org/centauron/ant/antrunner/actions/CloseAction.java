@@ -15,12 +15,12 @@ public class CloseAction extends AntRunnerAction {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		try {
-			this.antrunner.saveProperties();
+			this.antrunner.askforSaveAndQuit();
+			
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		System.exit(0);
 	}
 
 }

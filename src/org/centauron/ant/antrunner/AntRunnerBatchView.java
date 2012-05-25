@@ -300,12 +300,15 @@ public class AntRunnerBatchView extends JPanel {
 
 
 	public void openFile(File f) throws Exception {
-		Vector<AntRunnerNode> ano=myparser.getNodesFromFile(f,this);
+		m_currentfile=f;
 		this.getListModel().removeAllElements();
-		for (AntRunnerNode ar:ano) {
-			this.getListModel().addElement(ar);
+		if (f!=null) {
+			Vector<AntRunnerNode> ano=myparser.getNodesFromFile(f,this);
+			for (AntRunnerNode ar:ano) {
+				this.getListModel().addElement(ar);
+			}
+			this.updateCaptionTitle();
 		}
-		this.updateCaptionTitle();
 	}
 
 
@@ -395,6 +398,11 @@ public class AntRunnerBatchView extends JPanel {
 
 	public JList getList() {
 		return m_list;
+	}
+
+
+	public File getCurrentFile() {
+		return m_currentfile;
 	}
 
 
