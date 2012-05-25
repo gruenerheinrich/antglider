@@ -20,6 +20,7 @@ public class RemovePanelAction extends AntRunnerAction {
 		// TODO Auto-generated method stub
 		try {
 			this.antrunner.leftpanelHolder.removeTabAt(this.antrunner.leftpanelHolder.getSelectedIndex());
+			this.antrunner.configurationChanged();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

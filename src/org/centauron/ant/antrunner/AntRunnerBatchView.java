@@ -64,6 +64,7 @@ public class AntRunnerBatchView extends JPanel {
 	private int m_modus;
 	private JMenuBar  themenubar;
 	private File m_currentfile;
+	private boolean m_configfilechanged;
 	private JPopupMenu popup;
 	private DropTargetListener mydropper;
 	private AntRunnerBatchParser myparser;
@@ -277,6 +278,9 @@ public class AntRunnerBatchView extends JPanel {
 		String name="(new)";
 		if (m_currentfile!=null) {
 			name=m_currentfile.getName();
+		}
+		if (m_configfilechanged) {
+			name=name+ " *";
 		}
 		return "Batch - "+name;
 	}

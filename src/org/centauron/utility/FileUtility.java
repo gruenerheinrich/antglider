@@ -60,4 +60,8 @@ public class FileUtility {
 	public static File getAbsolutePath(String fname, File dir) {
 		return new File(dir,fname);
 	}
+	public static boolean isSubFile(File baseDir, File file) {
+		//TODO 
+		return false;
+	}
 }

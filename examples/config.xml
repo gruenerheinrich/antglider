@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <config>
 <panel caption="test">
+<target buildfile="javascript.xml">js.theDefaultTarget</target>
 <buildfile>javascript.xml</buildfile>
 </panel>
 </config>

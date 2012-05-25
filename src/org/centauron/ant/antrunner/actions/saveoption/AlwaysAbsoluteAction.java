@@ -15,7 +15,7 @@ import org.centauron.ant.antrunner.actions.AntRunnerAction;
 public class AlwaysAbsoluteAction extends AntRunnerAction {
 	
 	public AlwaysAbsoluteAction() {
-		super("Ask when not sub-dir");
+		super("Always Absolute");
 		this.setEnabled(true);
 		this.putValue(SHORT_DESCRIPTION, "Always save absolute filepaths");
 		this.putValue(LONG_DESCRIPTION, "Always save absolute filepaths");

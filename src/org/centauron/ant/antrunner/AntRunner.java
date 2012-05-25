@@ -243,6 +243,7 @@ public class AntRunner extends JFrame {
 		AntRunnerPanel pan=new AntRunnerPanel(this,fullic.getAbsolutePath(),panelname);
 		leftpanelHolder.addTab(pan.getCaption(), pan.getIcon(), pan);
 		leftpanelHolder.setSelectedComponent(pan);
+		configurationChanged();
 		return pan;
 	}
 	
@@ -255,7 +256,6 @@ public class AntRunner extends JFrame {
 		if (m_configfile.exists()) {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			System.out.println("READ :" + m_configfile.getAbsolutePath());
 			Document doc = builder.parse(m_configfile.getAbsolutePath());
 			NodeList panelnodes=	doc.getElementsByTagName("panel");
 			for (int i=0;i<panelnodes.getLength();i++) {
@@ -306,6 +306,8 @@ public class AntRunner extends JFrame {
 					}
 				}
 			}
+			this.m_configfilechanged=false;
+			this.refreshTitle();
 		} else {
 			throw new Exception("File does not exitst");
 		}
@@ -453,7 +455,6 @@ public class AntRunner extends JFrame {
 		
 		//DIVIDER POSITION
 		String div=myProperties.getProperty("application.divider", "0.6");
-		System.out.println("SET DIVIDER:"+Double.parseDouble(div));
 		int idiv=(int)((double)this.getWidth()*Double.parseDouble(div));
 		mainpane.setDividerLocation(idiv);
 		
@@ -526,6 +527,7 @@ public class AntRunner extends JFrame {
 		// Add a new tab
 		leftpanelHolder.insertTab(label, icon, comp, tooltip, nidx);
 		leftpanelHolder.setSelectedIndex(nidx);
+		configurationChanged();
 	}
 
 	public static ImageIcon getResourceImageIcon(String path) {
@@ -560,7 +562,17 @@ public class AntRunner extends JFrame {
 		if (this.getSaveModus()==AntRunner.SAVEMODUS_ALWAYSRELATIVE) {
 			return FileUtility.getRelativePath(baseDir, file);
 		}
-		return null;
+		if (this.getSaveModus()==AntRunner.SAVEMODUS_ALWAYSABSOLUTE) {
+			return file.getAbsolutePath();
+		}
+		if (this.getSaveModus()==AntRunner.SAVEMODUS_ABSOLUTEWHENNONSUB) {
+			if (FileUtility.isSubFile(baseDir,file)) {
+				return FileUtility.getRelativePath(baseDir, file);
+			} else {
+				return file.getAbsolutePath();
+			}
+		}
+		return file.getAbsolutePath();
 	}
 
 	private int getSaveModus() {
@@ -572,7 +584,7 @@ public class AntRunner extends JFrame {
 		
 	}
 
-	public void fileChanged() {
+	public void configurationChanged() {
 		this.m_configfilechanged=true;
 		this.refreshTitle();
 	}

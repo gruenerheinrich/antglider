@@ -27,6 +27,7 @@ public class RemoveNodeAction extends AntRunnerAction {
 		//ASK??
 		this.antrunner.getCurrentPanel().getRootNode().remove(this.antrunner.getCurrentPanel().getCurrentElement());
 		DefaultTreeModel model = (DefaultTreeModel) this.antrunner.getCurrentPanel().tree.getModel();
+		this.antrunner.configurationChanged();
 		model.reload();
 	}
 }

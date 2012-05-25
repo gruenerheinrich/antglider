@@ -64,7 +64,9 @@ public class AntRunnerPanel extends JPanel {
 			public void valueChanged(TreeSelectionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					getCurrentElement().selectNode();
+					if (getCurrentElement()!=null) {
+						getCurrentElement().selectNode();
+					}
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -157,6 +159,7 @@ public class AntRunnerPanel extends JPanel {
 			tnode.setTargetName(n);
 			fnode.add(tnode);
 		}
+		this.antrunner.configurationChanged();
 		reloadTree();
 		return true;
 	}
@@ -166,18 +169,21 @@ public class AntRunnerPanel extends JPanel {
 		fnode.setBuildFile(file.getAbsoluteFile());
 		fnode.setTargetName(targetname);		
 		rootNode.add(fnode);
+		this.antrunner.configurationChanged();
 		reloadTree();
 		
 	}
 	public boolean addDir(File dir,String filterMask) {
-		this.antrunner.fileChanged();
+		this.antrunner.configurationChanged();
 		return addDir(dir,filterMask,null);
 	}
 	
 	
 	public boolean addDir(File dir,String filterMask,AntRunnerNode parent) {
 		File[] flist=dir.listFiles();
+		if (flist==null) return false;
 		AntRunnerNode dnode=new AntRunnerNode(this.antrunner,this,(parent==null)?dir.getName():dir.getName(), (parent==null)?AntRunnerNode.MODE_STANDALONEDIR:AntRunnerNode.MODE_DIR);
+		dnode.setDir(dir);
 		boolean atleastone=false;
 		for (File f:flist) {
 			if (!f.isHidden()) {

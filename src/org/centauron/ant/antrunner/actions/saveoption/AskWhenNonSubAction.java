@@ -15,7 +15,7 @@ import org.centauron.ant.antrunner.actions.AntRunnerAction;
 public class AskWhenNonSubAction extends AntRunnerAction {
 	
 	public AskWhenNonSubAction() {
-		super("Relative Filepath");
+		super("Ask when not sub-dir");
 		this.setEnabled(true);
 		this.putValue(SHORT_DESCRIPTION, "Save relative filepaths when file resides under config or batch-file. Otherwise Ask.");
 		this.putValue(LONG_DESCRIPTION, "Save relative filepaths when file resides under config or batch-file. Otherwise Ask.");

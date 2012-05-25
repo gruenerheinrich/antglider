@@ -43,6 +43,7 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 	private int m_lastresult;
 	private String m_name;
 	private Object notifyParent;
+	private File m_dir;
 	public AntRunnerNode(AntRunner main,Object n,String name,int mode) {
 		super(name);
 		m_name=name;
@@ -253,6 +254,13 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 		if (getMode()==AntRunnerNode.MODE_STANDALONEBUILDFILE)  {
 			node.setTextContent(this.antrunner.getOptionDrivenFileLocation(this.getBuildFile(),baseDir));
 		}
+		if (getMode()==AntRunnerNode.MODE_STANDALONETARGET)  {
+			node.setTextContent(this.getTargetName());
+			node.setAttribute("buildfile", this.antrunner.getOptionDrivenFileLocation(this.getBuildFile(),baseDir));
+		}
+		if (getMode()==AntRunnerNode.MODE_STANDALONEDIR) {
+			node.setTextContent(this.antrunner.getOptionDrivenFileLocation(this.getDir(),baseDir));
+		}
 		return node;
 	}
 	public static String getXMLTagName(int mode) {
@@ -272,5 +280,11 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 			return true;
 		}
 		return false;
+	}
+	public void setDir(File dir) {
+		m_dir=dir;
+	}
+	public File getDir() {
+		return m_dir;
 	}
 }
