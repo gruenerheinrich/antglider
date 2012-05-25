@@ -15,14 +15,14 @@ import org.centauron.ant.antrunner.actions.AntRunnerAction;
 public class AbsoluteWhenNonSubAction extends AntRunnerAction {
 	
 	public AbsoluteWhenNonSubAction() {
-		super("Relative Filepath");
+		super("Only Absolute when not sub-dir");
 		this.setEnabled(true);
-		this.putValue(SHORT_DESCRIPTION, "Always save filepath relative to config or batch-file");
-		this.putValue(LONG_DESCRIPTION, "Always save filepath relative to config or batch-file");
+		this.putValue(SHORT_DESCRIPTION, "Save relative filepaths when file resides under config or batch-file. Otherwise Absolute.");
+		this.putValue(LONG_DESCRIPTION, "Save relative filepaths when file resides under config or batch-file. Otherwise Absolute.");
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.antrunner.setSaveModus(AntRunner.SAVEMODUS_ALWAYSRELATIVE);
+		this.antrunner.setSaveModus(AntRunner.SAVEMODUS_ABSOLUTEWHENNONSUB);
 	}
 
 }

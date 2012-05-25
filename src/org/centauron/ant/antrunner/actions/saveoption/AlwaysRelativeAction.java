@@ -15,7 +15,7 @@ import org.centauron.ant.antrunner.actions.AntRunnerAction;
 public class AlwaysRelativeAction extends AntRunnerAction {
 	
 	public AlwaysRelativeAction() {
-		super("Relative Filepath");
+		super("Always Relative");
 		this.setEnabled(true);
 		this.putValue(SHORT_DESCRIPTION, "Always save filepath relative to config or batch-file");
 		this.putValue(LONG_DESCRIPTION, "Always save filepath relative to config or batch-file");
