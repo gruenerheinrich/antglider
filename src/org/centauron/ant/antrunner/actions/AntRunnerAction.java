@@ -28,5 +28,8 @@ public class AntRunnerAction extends AbstractAction {
 	  ActionEvent e=new ActionEvent(this,0,this.ACTION_COMMAND_KEY);
 	  this.actionPerformed(e);	
 	}
+	public void checkEnabled() {
+			
+	}
 
 }

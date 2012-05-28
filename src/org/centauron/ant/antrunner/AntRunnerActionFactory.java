@@ -1,9 +1,11 @@
 package org.centauron.ant.antrunner;
 
+import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 
 import javax.swing.Action;
+import javax.swing.JButton;
 
 import org.centauron.ant.antrunner.actions.AntRunnerAction;
 
@@ -22,4 +24,11 @@ public class AntRunnerActionFactory {
 		m_constructed.put(nn,ret);
 		return ret;
 	}
+	public JButton getSmallButtonForAction(String string) throws Exception {
+		JButton butt=new JButton(this.getActionForName(string));
+		butt.setText("");
+		butt.getInsets().right=2;
+		butt.getInsets().left=2;
+		return butt;
+	}	
 }

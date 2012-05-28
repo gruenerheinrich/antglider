@@ -25,9 +25,11 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 	public static final int MODE_STANDALONETARGET = 4;
 	public static final int MODE_STANDALONEDIR = 5;
 	public static final int MODE_BATCHTARGET = 6;
+	public static final int MODE_SHORTCUTTARGET = 7;
 	public static final int MODE_DIR = 6;
 	public final static int RESULT_SUCCESS=1;
 	public final static int RESULT_FAILED=2;
+	
 	
 	
 	
@@ -85,7 +87,7 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 		JPopupMenu pop=new JPopupMenu();
 		if (m_mode==AntRunnerNode.MODE_STANDALONEBUILDFILE) {
 			pop.add(this.antrunner.getFactory().getActionForName("RunDefaultAction"));
-			pop.add(this.antrunner.getFactory().getActionForName("RunDefaultAction"));
+			pop.add(this.antrunner.getFactory().getActionForName("AddToShortCutAction"));
 			pop.add(this.antrunner.getFactory().getActionForName("RefreshFileAction"));
 			pop.addSeparator();
 			pop.add(this.antrunner.getFactory().getActionForName("RemoveNodeAction"));
@@ -286,5 +288,18 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 	}
 	public File getDir() {
 		return m_dir;
+	}
+	public boolean isDeleteable() {
+		//ALL NODES THAT CAN BE SAVED
+		return this.canCreateXMLNode();
+	}
+	public boolean isStartable() {
+		if (getMode()==AntRunnerNode.MODE_STANDALONEBUILDFILE || getMode()==AntRunnerNode.MODE_BUILDFILE || getMode()==AntRunnerNode.MODE_STANDALONETARGET || getMode()==AntRunnerNode.MODE_TARGET || getMode()==AntRunnerNode.MODE_DEFAULTTARGET) {
+			return true;
+		}
+		return false;
+	}
+	public boolean isBatchAddable() {
+		return(getMode()==AntRunnerNode.MODE_STANDALONETARGET || getMode()==AntRunnerNode.MODE_TARGET);
 	}
 }

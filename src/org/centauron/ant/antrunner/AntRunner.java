@@ -66,8 +66,7 @@ public class AntRunner extends JFrame {
 	public final static int SAVEMODUS_ALWAYSABSOLUTE=1;
 	public final static int SAVEMODUS_ABSOLUTEWHENNONSUB=2;
 	public final static int SAVEMODUS_ASKWHENNONSUB=3;
-	
-	public final static String SHORTCUTPANEL="shortcut";
+
 	private File m_configfile;
 	private JPanel shortcutpanel;
 	private JMenuBar  themenubar;
@@ -83,6 +82,7 @@ public class AntRunner extends JFrame {
 	public AntRunnerBatchView batchview;
 	private ButtonGroup consolegroup;
 	private ButtonGroup batchgroup;
+	private ButtonGroup shortgroup;
 	private ButtonGroup saveoptiongroup;
 	private double m_tempdivider;
 	private int m_savemodus;
@@ -90,7 +90,7 @@ public class AntRunner extends JFrame {
 	public AntRunner() throws Exception {
 		m_factory=new AntRunnerActionFactory(this);
 		shortcutpanel=new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-		
+		validateShortCutPanel();
 		this.initMenuBars();
 		this.setIconImage(AntRunner.getResourceImageIcon("ant.png").getImage());
 		console=new AntRunnerConsole(this);
@@ -107,7 +107,7 @@ public class AntRunner extends JFrame {
 		mainpane.add(rightpanelHolder);
 		
 		JPanel pane=new JPanel(new BorderLayout());
-		//pane.add("North",themenubar);
+		pane.add("North",shortcutpanel);
 		this.setJMenuBar(themenubar);
 		pane.add("Center",mainpane);
 		this.getContentPane().setLayout(new BorderLayout());
@@ -175,6 +175,18 @@ public class AntRunner extends JFrame {
 		batchmenu.add(item);
 		view.add(batchmenu);
 
+		JMenu shortmenu=new JMenu("Shortcuts");
+		shortgroup = new ButtonGroup();
+		item = new JRadioButtonMenuItem(m_factory.getActionForName("ShortCutsHideAction"));
+		shortgroup.add(item);
+		shortmenu.add(item);
+		item = new JRadioButtonMenuItem(m_factory.getActionForName("ShortCutsAttachAction"));
+		shortgroup.add(item);
+		shortmenu.add(item);
+
+		view.add(shortmenu);		
+
+		
 		themenubar.add(view);
 		
 		
@@ -209,9 +221,12 @@ public class AntRunner extends JFrame {
 		panelpopup.add(getFactory().getActionForName("MoveForwardPanelAction"));
 		
 	}
+	private void validateShortCutPanel() {
+		//TODO 
+	}
 	private void validateLeftPanel() {
 		if (leftpanelHolder.getTabCount()==0) {
-			//CREATE EMPTY TAB
+			//TODO CREATE EMPTY TAB
 		}
 		
 	}
@@ -231,12 +246,7 @@ public class AntRunner extends JFrame {
 		}
 	}	
 
-	public void addButton(String panelname,AntRunnerElement al) {
-		if (panelname.equalsIgnoreCase(AntRunner.SHORTCUTPANEL)) {
-			this.shortcutpanel.add(new AntRunnerButton(al));
-		}
-		
-	}
+
 	
 	public AntRunnerPanel addPanel(String iconname,String panelname) throws Exception {
 		File fullic=new File(this.getConfigDir(),iconname);
@@ -257,6 +267,13 @@ public class AntRunner extends JFrame {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document doc = builder.parse(m_configfile.getAbsolutePath());
+			
+			NodeList shortcutnodes=doc.getElementsByTagName("shortcut");
+			for (int i=0;i<shortcutnodes.getLength();i++) {
+				Element element=(Element)shortcutnodes.item(i);
+				this.addShortCut(element.getAttribute("icon"),element.getAttribute("buildfile"),element.getAttribute("target"));
+			}
+			
 			NodeList panelnodes=	doc.getElementsByTagName("panel");
 			for (int i=0;i<panelnodes.getLength();i++) {
 				Element panelelement=(Element)panelnodes.item(i);
@@ -313,6 +330,18 @@ public class AntRunner extends JFrame {
 		}
 
 	}
+	private void addShortCut(String icon, String buildfile,
+			String tname) {
+		AntRunnerNode an=new AntRunnerNode(this, null, tname, AntRunnerNode.MODE_SHORTCUTTARGET);
+		an.setBuildFile(new File(buildfile));
+		an.setTargetName(tname);
+		ImageIcon ic=new ImageIcon(icon);
+		if (ic.getIconWidth()==-1) {
+			ic=this.getResourceImageIcon("ant.png");
+		}
+		this.shortcutpanel.add(new AntRunnerButton(an,(Icon)ic));
+	}
+
 	private void setConfigFile(File file) {
 		m_configfile=file;
 		this.refreshTitle();

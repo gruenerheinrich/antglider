@@ -26,11 +26,14 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.centauron.utility.ArrayListTransferHandler;
 import org.centauron.utility.PopupMenuAdapter;
 import org.centauron.utility.TreeTransferHandler;
+import org.centauron.utility.VerticalFlowLayout;
 
 public class AntRunnerPanel extends JPanel {
 	private String m_caption;
@@ -41,7 +44,7 @@ public class AntRunnerPanel extends JPanel {
 	private JPopupMenu popup;
 	public AntRunner antrunner;
 	public AntRunnerPanel(AntRunner ar,String icon,String name) throws Exception {
-		super(new BorderLayout(0,0));
+		super(new BorderLayout(5,5));
 		antrunner=ar;
 		m_caption=name;
 		m_icon=AntRunner.getScaledIconFromImageName(icon,20,20);
@@ -67,6 +70,7 @@ public class AntRunnerPanel extends JPanel {
 					if (getCurrentElement()!=null) {
 						getCurrentElement().selectNode();
 					}
+					armActions();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -119,6 +123,60 @@ public class AntRunnerPanel extends JPanel {
 			}				
 		});
 		tree.setCellRenderer(new AntRunnerNodeRenderer());
+		
+		JPanel modifyPanel=new JPanel(new VerticalFlowLayout(VerticalFlowLayout.LEFT,VerticalFlowLayout.BOTTOM,2,2));			
+		modifyPanel.add(getFactory().getSmallButtonForAction("BatchAddSelectedAction"));
+		modifyPanel.add(getFactory().getSmallButtonForAction("NodeMoveBackwardAction"));
+		modifyPanel.add(getFactory().getSmallButtonForAction("NodeMoveForwardAction"));
+		modifyPanel.add(getFactory().getSmallButtonForAction("RemoveNodeAction"));
+		
+		JPanel actionPanel=new JPanel(new VerticalFlowLayout(VerticalFlowLayout.LEFT,VerticalFlowLayout.TOP,2,2));
+		actionPanel.add(getFactory().getSmallButtonForAction("RunNodeAction"));
+
+		JPanel allPanel=new JPanel(new BorderLayout());
+		allPanel.add("North",actionPanel);
+		allPanel.add("South",modifyPanel);
+		this.add("East",allPanel);
+		
+		unArmActions();
+	}
+	private void unArmActions() throws Exception {
+		this.getFactory().getActionForName("BatchAddSelectedAction").setEnabled(false);
+		this.getFactory().getActionForName("NodeMoveBackwardAction").setEnabled(false);
+		this.getFactory().getActionForName("NodeMoveForwardAction").setEnabled(false);
+		this.getFactory().getActionForName("RemoveNodeAction").setEnabled(false);
+
+		this.getFactory().getActionForName("RunNodeAction").setEnabled(false);
+	}
+	private void armActions() throws Exception {
+		
+		unArmActions();
+		if (this.getCurrentElement()==null) {
+			return;
+		}
+		
+		int all=rootNode.getChildCount();
+		int idx=rootNode.getIndex(this.getCurrentElement());
+		if (idx!=-1) {
+			if (idx!=0) {
+				this.getFactory().getActionForName("NodeMoveBackwardAction").setEnabled(true);			
+			}
+			if (idx!=(all-1)) {
+				this.getFactory().getActionForName("NodeMoveForwardAction").setEnabled(true);					
+			}
+		}
+		if (this.getCurrentElement().isDeleteable()) {
+			this.getFactory().getActionForName("RemoveNodeAction").setEnabled(true);
+		}
+		if (this.getCurrentElement().isStartable()) {
+			this.getFactory().getActionForName("RunNodeAction").setEnabled(true);			
+		}
+		this.getFactory().getActionForName("BatchAddSelectedAction").checkEnabled();
+		
+			
+	}
+	private AntRunnerActionFactory getFactory() {
+		return this.antrunner.getFactory();
 	}
 	public String getCaption() {
 		return m_caption;
@@ -150,6 +208,13 @@ public class AntRunnerPanel extends JPanel {
 		} else {
 			parent.add(fnode);
 		}
+		this.insertTargetChildren(fnode, bi, file);
+		this.antrunner.configurationChanged();
+		reloadTree();
+		return true;
+	}
+	
+	public void insertTargetChildren(AntRunnerNode buildfile,BuildFileInfo bi,File file) {
 		for (String n:bi.targets) {
 			AntRunnerNode tnode=new AntRunnerNode(this.antrunner,this,n,AntRunnerNode.MODE_TARGET);		
 			if (n.equalsIgnoreCase(bi.defaultTarget)) {
@@ -157,11 +222,9 @@ public class AntRunnerPanel extends JPanel {
 			}
 			tnode.setBuildFile(file);
 			tnode.setTargetName(n);
-			fnode.add(tnode);
+			buildfile.add(tnode);
 		}
-		this.antrunner.configurationChanged();
-		reloadTree();
-		return true;
+		
 	}
 	
 	public void addTarget(File file,String caption,String targetname) {
@@ -222,6 +285,15 @@ public class AntRunnerPanel extends JPanel {
 	public void reloadTree() {
 		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 		model.reload();		
+	}
+	public void moveCurrentElement(int i) {
+		TreePath tp=tree.getSelectionPath();
+		TreeNode el=(TreeNode)tp.getLastPathComponent();
+		int idx=rootNode.getIndex(el);
+		rootNode.remove(idx);
+		rootNode.insert((MutableTreeNode) el, idx+i);
+		this.reloadTree();
+		tree.setSelectionPath(tp);
 	}
 	
 }

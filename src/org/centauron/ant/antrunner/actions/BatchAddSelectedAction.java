@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 
 import org.centauron.ant.antrunner.AntRunner;
+import org.centauron.ant.antrunner.AntRunnerBatchView;
 import org.centauron.ant.antrunner.AntRunnerConsole;
 import org.centauron.ant.antrunner.AntRunnerNode;
 
@@ -22,4 +23,18 @@ public class BatchAddSelectedAction extends AntRunnerAction {
 		this.antrunner.batchview.addElement(newnode);
 	}
 
+	public void checkEnabled() {
+		if (this.antrunner.batchview==null) return;
+		if (this.antrunner.getCurrentPanel()==null) return;
+		if (this.antrunner.batchview.getModus()!=AntRunnerBatchView.MODE_HIDE) {
+			if (this.antrunner.getCurrentPanel().getCurrentElement()!=null) {
+				if (this.antrunner.getCurrentPanel().getCurrentElement().isBatchAddable()) {
+					super.setEnabled(true);
+					return;
+				}
+			}
+		}
+		super.setEnabled(false);
+	}
+	
 }

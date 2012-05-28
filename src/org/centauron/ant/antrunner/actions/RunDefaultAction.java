@@ -10,7 +10,7 @@ import org.centauron.ant.antrunner.AntRunner;
 public class RunDefaultAction extends AntRunnerAction {
 	
 	public RunDefaultAction() {
-		super("Run Default",AntRunner.getResourceImageIcon("run_tool.png"));
+		super("Run Default Target",AntRunner.getResourceImageIcon("run_tool.png"));
 		this.setEnabled(true);
 		this.putValue(SHORT_DESCRIPTION, "Adding a dir and subdirs to current panel");
 		this.putValue(LONG_DESCRIPTION, "Adding a dir and subdirs to current panel");

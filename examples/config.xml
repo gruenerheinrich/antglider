@@ -3,5 +3,7 @@
 <panel caption="test">
 <target buildfile="javascript.xml">js.theDefaultTarget</target>
 <buildfile>javascript.xml</buildfile>
+<dir>somemore</dir>
 </panel>
+<shortcut icon="bomb.png" buildfile="javascript.xml" target="js.timer"/>
 </config>

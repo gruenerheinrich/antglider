@@ -136,14 +136,14 @@ public class AntRunnerBatchView extends JPanel {
 
 		this.add("Center",new JScrollPane(m_list));
 		JPanel modifyPanel=new JPanel(new VerticalFlowLayout(VerticalFlowLayout.LEFT,VerticalFlowLayout.BOTTOM,2,2));			
-		modifyPanel.add(this.getSmallButtonForAction("BatchAddSelectedAction"));
-		modifyPanel.add(this.getSmallButtonForAction("BatchMoveBackwardAction"));
-		modifyPanel.add(this.getSmallButtonForAction("BatchMoveForwardAction"));
-		modifyPanel.add(this.getSmallButtonForAction("BatchRemoveSelectedAction"));
+		//modifyPanel.add(getFactory().getSmallButtonForAction("BatchAddSelectedAction"));
+		modifyPanel.add(getFactory().getSmallButtonForAction("BatchMoveBackwardAction"));
+		modifyPanel.add(getFactory().getSmallButtonForAction("BatchMoveForwardAction"));
+		modifyPanel.add(getFactory().getSmallButtonForAction("BatchRemoveSelectedAction"));
 		
 		JPanel actionPanel=new JPanel(new VerticalFlowLayout(VerticalFlowLayout.LEFT,VerticalFlowLayout.TOP,2,2));
-		actionPanel.add(this.getSmallButtonForAction("BatchRunAction"));
-		actionPanel.add(this.getSmallButtonForAction("BatchHaltAction"));
+		actionPanel.add(getFactory().getSmallButtonForAction("BatchRunAction"));
+		actionPanel.add(getFactory().getSmallButtonForAction("BatchHaltAction"));
 
 		JPanel allPanel=new JPanel(new BorderLayout());
 		allPanel.add("North",actionPanel);
@@ -204,7 +204,6 @@ public class AntRunnerBatchView extends JPanel {
 	}
 	
 	private void unArmActions() throws Exception {
-		this.getFactory().getActionForName("BatchAddSelectedAction").setEnabled(false);
 		this.getFactory().getActionForName("BatchMoveBackwardAction").setEnabled(false);
 		this.getFactory().getActionForName("BatchMoveForwardAction").setEnabled(false);
 		this.getFactory().getActionForName("BatchRemoveSelectedAction").setEnabled(false);
@@ -213,13 +212,7 @@ public class AntRunnerBatchView extends JPanel {
 
 
 
-	private Component getSmallButtonForAction(String string) throws Exception {
-		JButton butt=new JButton(this.getFactory().getActionForName(string));
-		butt.setText("");
-		butt.getInsets().right=2;
-		butt.getInsets().left=2;
-		return butt;
-	}
+
 
 
 
@@ -259,14 +252,14 @@ public class AntRunnerBatchView extends JPanel {
 		
 		if (mode==AntRunnerBatchView.MODE_HIDE) {
 			//NOTHING
-			this.getFactory().getActionForName("BatchAddSelectedAction").setEnabled(false);
+			this.getFactory().getActionForName("BatchAddSelectedAction").checkEnabled();
 		}
 		if (mode==AntRunnerBatchView.MODE_ATTACH) {
-			this.getFactory().getActionForName("BatchAddSelectedAction").setEnabled(true);
+			this.getFactory().getActionForName("BatchAddSelectedAction").checkEnabled();
 			this.m_runner.rightpanelHolder.addTab(getCaptionTitle(), AntRunner.getResourceImageIcon("script.png"),this);
 		}		
 		if (mode==AntRunnerBatchView.MODE_FRAME) {
-			this.getFactory().getActionForName("BatchAddSelectedAction").setEnabled(true);
+			this.getFactory().getActionForName("BatchAddSelectedAction").checkEnabled();
 			m_frame.getContentPane().add("Center",this);
 			m_frame.setVisible(true);
 		}			

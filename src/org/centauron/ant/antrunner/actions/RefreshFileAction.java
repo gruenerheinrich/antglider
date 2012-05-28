@@ -8,6 +8,10 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.centauron.ant.antrunner.AntRunnerNode;
+import org.centauron.ant.antrunner.AntUtils;
+import org.centauron.ant.antrunner.BuildFileInfo;
+
 public class RefreshFileAction extends AntRunnerAction {
 	
 	public RefreshFileAction() {
@@ -19,17 +23,17 @@ public class RefreshFileAction extends AntRunnerAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		JFileChooser fc = new JFileChooser();
-		int ret=fc.showOpenDialog(this.antrunner);
-		if (ret == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
-            try {
-				this.antrunner.initConfigFile(file.getAbsolutePath());
-			} catch (Exception e1) {
-				//ERROR OPENING
-				JOptionPane.showMessageDialog(this.antrunner, "Error opening File","AntRunner",JOptionPane.ERROR_MESSAGE);
-			}
-		}        
+		//RELOAD ME TO GET TARGT LIST
+		try {
+			AntRunnerNode nn=this.antrunner.getCurrentPanel().getCurrentElement();
+			nn.removeAllChildren();
+			File file=nn.getBuildFile();
+			BuildFileInfo bi=AntUtils.getBuildFileInfo(file);
+			this.antrunner.getCurrentPanel().insertTargetChildren(nn, bi, file);
+			this.antrunner.getCurrentPanel().reloadTree();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }
