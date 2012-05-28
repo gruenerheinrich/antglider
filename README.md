@@ -1,4 +1,4 @@
-antrunner
+antglider
 =========
 
-AntRunner is a modifiable GUI to Run and Batch Ant Files.
+AntGlider is a modifiable GUI to Run and Batch Ant Files.
