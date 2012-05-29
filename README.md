@@ -4,9 +4,9 @@ AntGlider is a modifiable GUI to start Ant Targets.
 
 ## Features
 
-    * Add Tab Panels to your GUI
-    * Add to a panel
-        ** Ant Buildfiles
+* Add Tab Panels to your GUI
+* Add to a panel
+** Ant Buildfiles
         ** Ant Targets
         ** Directories (automatically detect Buildfiles)
         ** Remote Locations of Ant Buildfiles
