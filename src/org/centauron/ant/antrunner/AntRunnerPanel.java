@@ -119,6 +119,16 @@ public class AntRunnerPanel extends JPanel {
 						JPopupMenu pop=an.getPopupMenu();
 						pop.show((Component) e.getSource(), e.getX(), e.getY());
 					}
+					if (e.getButton()==MouseEvent.BUTTON1 && e.getClickCount()==2) {
+						TreePath tp=tree.getPathForLocation(e.getX(), e.getY());
+						if (!tp.equals(tree.getSelectionPath())) {
+							tree.setSelectionPath(tp);
+						}
+						AntRunnerNode an=(AntRunnerNode)tp.getLastPathComponent();
+						if (an.isTarget()) {
+							an.getAntRunner().startAntRunnerNode(an);	
+						}
+					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

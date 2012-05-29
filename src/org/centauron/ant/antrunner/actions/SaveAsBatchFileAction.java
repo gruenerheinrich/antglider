@@ -39,7 +39,7 @@ public class SaveAsBatchFileAction extends AntRunnerAction {
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				//ERROR OPENING
-				JOptionPane.showMessageDialog(this.antrunner, "Error Saving File","AntRunner",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this.antrunner, "Error Saving File",AntRunner.applicatonName,JOptionPane.ERROR_MESSAGE);
 			}
 		}        
 	}

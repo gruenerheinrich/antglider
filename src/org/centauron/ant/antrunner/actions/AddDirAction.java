@@ -34,7 +34,7 @@ public class AddDirAction extends AntRunnerAction {
         		ap.addDir(file,"*.xml");
 			} catch (Exception e1) {
 				//ERROR OPENING
-				JOptionPane.showMessageDialog(this.antrunner, "Error adding File","AntRunner",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this.antrunner, "Error adding File",AntRunner.applicatonName,JOptionPane.ERROR_MESSAGE);
 			}
 		}  	
 		

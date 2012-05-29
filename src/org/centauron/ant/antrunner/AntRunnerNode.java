@@ -26,7 +26,7 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 	public static final int MODE_STANDALONEDIR = 5;
 	public static final int MODE_BATCHTARGET = 6;
 	public static final int MODE_SHORTCUTTARGET = 7;
-	public static final int MODE_DIR = 6;
+	public static final int MODE_DIR = 8;
 	public final static int RESULT_SUCCESS=1;
 	public final static int RESULT_FAILED=2;
 	
@@ -309,6 +309,9 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 		return false;
 	}
 	public boolean isBatchAddable() {
-		return(getMode()==AntRunnerNode.MODE_STANDALONETARGET || getMode()==AntRunnerNode.MODE_TARGET);
+		return this.isTarget();
+	}
+	public boolean isTarget() {
+		return(getMode()==AntRunnerNode.MODE_STANDALONETARGET || getMode()==AntRunnerNode.MODE_TARGET || getMode()==AntRunnerNode.MODE_DEFAULTTARGET);
 	}
 }

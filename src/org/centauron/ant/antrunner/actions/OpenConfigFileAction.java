@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.centauron.ant.antrunner.AntRunner;
+
 public class OpenConfigFileAction extends AntRunnerAction {
 	
 	public OpenConfigFileAction() {
@@ -32,7 +34,7 @@ public class OpenConfigFileAction extends AntRunnerAction {
 				this.antrunner.initConfigFile(file.getAbsolutePath());
 			} catch (Exception e1) {
 				//ERROR OPENING
-				JOptionPane.showMessageDialog(this.antrunner, "Error opening File","AntRunner",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this.antrunner, "Error opening File",AntRunner.applicatonName,JOptionPane.ERROR_MESSAGE);
 			}
 		}        
 	}

@@ -35,7 +35,8 @@ public class ShortCutAction extends AntRunnerAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			m_el.selectNode();
+			getNode().getAntRunner().selectAndDisplayNode(getNode());
+			getNode().selectNode();
 			this.antrunner.startAntRunnerNode(m_el);
 		} catch (Exception e1) {
 			e1.printStackTrace();

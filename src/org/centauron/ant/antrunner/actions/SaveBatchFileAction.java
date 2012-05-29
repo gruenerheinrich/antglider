@@ -8,6 +8,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.centauron.ant.antrunner.AntRunner;
+
 public class SaveBatchFileAction extends AntRunnerAction {
 	
 	public SaveBatchFileAction() {
@@ -28,7 +30,7 @@ public class SaveBatchFileAction extends AntRunnerAction {
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this.antrunner, "Error saving File.","AntRunner",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this.antrunner, "Error saving File.",AntRunner.applicatonName,JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

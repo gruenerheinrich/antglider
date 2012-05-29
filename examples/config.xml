@@ -6,4 +6,5 @@
 <dir>somemore</dir>
 </panel>
 <shortcut icon="bomb.png" buildfile="javascript.xml" target="js.timer"/>
+<shortcut icon="box.png" title="GO" buildfile="javascript.xml" target="js.long.task.10s"/>
 </config>

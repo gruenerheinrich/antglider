@@ -29,6 +29,7 @@ import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -44,6 +45,8 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -73,6 +76,7 @@ public class AntRunner extends JFrame {
 	public final static int SAVEMODUS_ASKWHENNONSUB=3;
 	public static final int SHORTCUTMODE_HIDE = 0;
 	public static final int SHORTCUTMODE_DISPLAY = 1;
+	public static final String applicatonName = "AntGlider";
 
 	private File m_configfile;
 	private JPanel shortcutpanel;
@@ -147,7 +151,7 @@ public class AntRunner extends JFrame {
 				}
 			}
 		});
-		this.unArmPanelActions();
+		this.armPanelActions();
 		this.setDefaultLookAndFeelDecorated(true);
 	}
 	
@@ -248,9 +252,9 @@ public class AntRunner extends JFrame {
 	private void validateShortCutPanel() {
 		//TODO 
 	}
-	private void validateLeftPanel() {
+	private void validateLeftPanel() throws Exception {
 		if (leftpanelHolder.getTabCount()==0) {
-			//TODO CREATE EMPTY TAB
+			this.addPanel("", "newpanel");
 		}
 		
 	}
@@ -270,7 +274,9 @@ public class AntRunner extends JFrame {
 		getFactory().getActionForName("panel.AddPanelAction").setEnabled(true);
 		if (idx==-1) return;
 		getFactory().getActionForName("panel.EditPanelAction").setEnabled(true);
-		getFactory().getActionForName("panel.RemovePanelAction").setEnabled(true);
+		if (i!=1) {
+			getFactory().getActionForName("panel.RemovePanelAction").setEnabled(true);
+		}
 		if (idx!=0)  {
 			getFactory().getActionForName("panel.MoveBackwardPanelAction").setEnabled(true);
 		}
@@ -326,6 +332,9 @@ public class AntRunner extends JFrame {
 			Document doc = builder.parse(m_configfile.getAbsolutePath());
 			
 			NodeList panelnodes=	doc.getElementsByTagName("panel");
+			if (panelnodes.getLength()==0) {
+				throw new Exception("NOT A CONFIG FILE");
+			}
 			for (int i=0;i<panelnodes.getLength();i++) {
 				Element panelelement=(Element)panelnodes.item(i);
 				AntRunnerPanel pan=this.addPanel(panelelement.getAttribute("icon"),panelelement.getAttribute("caption"));
@@ -371,6 +380,7 @@ public class AntRunner extends JFrame {
 			
 			this.m_configfilechanged=false;
 			this.refreshTitle();
+			this.revalidate();
 		} else {
 			throw new Exception("File does not exitst");
 		}
@@ -597,7 +607,13 @@ public class AntRunner extends JFrame {
 			AntRunner ar=new AntRunner();
 			if (args.length==1) {
 				ar.initConfigFile(args[0]);
+			} else {
+				File file=new File(".");
+				ar.setLastFile(file);
+				ar.openNewFile();
+				
 			}
+				
 			ar.loadProperties();
 			
 			ar.setVisible(true);
@@ -608,6 +624,30 @@ public class AntRunner extends JFrame {
 		
 	}
 	
+	private void openNewFile() {
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle("Open AntGlider Config File...");
+		fc.setCurrentDirectory(this.getLastFile());
+		FileFilter filter=new FileNameExtensionFilter("AntGlider Config Files (*.xml)", "xml"); 
+		fc.setFileFilter(filter);
+		int ret=fc.showOpenDialog(this);
+		if (ret == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            this.setLastFile(file);
+            try {
+            	this.initConfigFile(file.getPath());
+			} catch (Exception e1) {
+				//ERROR OPENING
+				this.setConfigFile(null);
+				JOptionPane.showMessageDialog(this, "Error Opening Config-File","AntGlider",JOptionPane.ERROR_MESSAGE);
+			}
+		} else {
+			
+		}
+		this.refreshTitle();
+		
+	}
+
 	public Icon getScaledIconFromImageName(String icon,int x,int y) {
 		
 		File ff=getAbsolutFileRelativeToConfig(icon);
@@ -710,9 +750,12 @@ public class AntRunner extends JFrame {
 	}
 
 	private void refreshTitle() {
-		String name=m_configfile.getPath();
-		if (!m_configfile.exists()) name=name+" (new)";
-		String title="AntRunner - "+name;
+		String name="no File";
+		if (m_configfile!=null) {
+			name=m_configfile.getPath();
+			if (!m_configfile.exists()) name=name+" (new)";
+		}
+		String title="AntGlider - "+name;
 		if (m_configfilechanged) {
 			title=title+" *";
 		}
@@ -720,7 +763,7 @@ public class AntRunner extends JFrame {
 	}
 	public void askforSaveAndQuit() throws Exception {
 		if (m_configfilechanged) {
-			int answer=JOptionPane.showConfirmDialog(this, "config file has been modified! Save?", "AntRunner",JOptionPane.YES_NO_CANCEL_OPTION);
+			int answer=JOptionPane.showConfirmDialog(this, "config file has been modified! Save?", AntRunner.applicatonName,JOptionPane.YES_NO_CANCEL_OPTION);
 			if (answer==JOptionPane.CANCEL_OPTION) return;
 			if (answer==JOptionPane.YES_OPTION) this.saveConfigFile(null);
 		}

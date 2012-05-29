@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<config>
-<panel caption="test" icon="">
-<target buildfile="javascript.xml">js.theDefaultTarget</target>
-<buildfile>javascript.xml</buildfile>
-<dir>somemore</dir>
-</panel>
-<shortcut buildfile="javascript.xml" icon="bomb.png" target="js.timer" title=""/>
-</config>

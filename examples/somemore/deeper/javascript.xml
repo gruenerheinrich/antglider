@@ -1,0 +1,15 @@
+<project name="DeeperFiles" default="deeper.theDefaultTarget">
+
+<target name="deeper.simpletest1" description="simple test #1">
+ <script language="javascript">
+   self.log("java script test #1");
+ </script>
+</target>
+
+<target name="deeper.theDefaultTarget" description="this is the default target">
+ <script language="javascript">
+   self.log("do nothing");
+ </script>
+</target>
+
+</project>

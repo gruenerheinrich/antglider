@@ -34,7 +34,7 @@ public class OpenBatchFileAction extends AntRunnerAction {
 				this.antrunner.batchview.openFile(file);
 			} catch (Exception e1) {
 				//ERROR OPENING
-				JOptionPane.showMessageDialog(this.antrunner, "Error opening File","AntRunner",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this.antrunner, "Error opening File",AntRunner.applicatonName,JOptionPane.ERROR_MESSAGE);
 			}
 		}        
 	}

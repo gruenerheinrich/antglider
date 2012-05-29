@@ -69,7 +69,7 @@ public class AddTargetAction extends AntRunnerAction implements PropertyChangeLi
         		}
 			} catch (Exception e1) {
 				//ERROR OPENING
-				JOptionPane.showMessageDialog(this.antrunner, "Error adding File","AntRunner",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this.antrunner, "Error adding File",AntRunner.applicatonName,JOptionPane.ERROR_MESSAGE);
 			}
 		}        
 		
