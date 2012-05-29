@@ -1,13 +1,16 @@
 package org.centauron.utility;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.io.File;
 import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
@@ -87,6 +90,14 @@ public class Utility {
 		}
 		return -1;
 	}
+	public static int getComponentIndex(JComponent tabby,Component child) {
+		for (int i=0;i<tabby.getComponentCount();i++) {
+			if (tabby.getComponent(i).equals(child)) {
+				return i;
+			}
+		}
+		return -1;
+	}	
 	public static int getListModelIndex(DefaultListModel model, Object o) {
 		for (int i=0;i<model.getSize();i++) {
 			if (model.get(i).equals(o)) return i;
@@ -96,5 +107,17 @@ public class Utility {
 	public static boolean hasFileExtension(File file) {
 		return (file.getAbsolutePath().lastIndexOf(".")!=-1);
 
-	}	
+	}
+	public static Vector<Component> getVectorFromContainer(Container panel) {
+		Vector<Component> v=new Vector();
+		for (int i=0;i<panel.getComponentCount();i++) {
+			v.add(panel.getComponent(i));
+		}
+		return v;
+	}
+	public static void putVectorToConainer(Container panel,Vector<Component> v) {
+		for (Component c:v) {
+			panel.add(c);
+		}
+	}
 }

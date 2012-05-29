@@ -5,9 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JButton;
 
 import org.centauron.ant.antrunner.actions.AntRunnerAction;
+import org.centauron.ant.antrunner.actions.shortcut.ShortCutAction;
 
 public class AntRunnerActionFactory {
 	private  Hashtable<String,AntRunnerAction> m_constructed=new Hashtable();
@@ -31,4 +33,11 @@ public class AntRunnerActionFactory {
 		butt.getInsets().left=2;
 		return butt;
 	}	
+	
+	public ShortCutAction getShortCutAction(AntRunnerNode el,Icon icon, String title) {
+		ShortCutAction ret=new ShortCutAction(icon,title);
+		ret.antrunner=this.antrunner;
+		ret.setNode(el);
+		return ret;
+	}
 }

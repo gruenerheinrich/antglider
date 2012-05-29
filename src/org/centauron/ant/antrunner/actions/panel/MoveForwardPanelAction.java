@@ -1,15 +1,17 @@
-package org.centauron.ant.antrunner.actions;
+package org.centauron.ant.antrunner.actions.panel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import org.centauron.ant.antrunner.TabForm;
+import org.centauron.ant.antrunner.AntRunner;
+import org.centauron.ant.antrunner.TitleAndIconSelection;
+import org.centauron.ant.antrunner.actions.AntRunnerAction;
 
 
 
-public class RemovePanelAction extends AntRunnerAction {
-	public RemovePanelAction() {
-		super("Remove Tab");
+public class MoveForwardPanelAction extends AntRunnerAction {
+	public MoveForwardPanelAction() {
+		super("Move to Front",AntRunner.getResourceImageIcon("arrow_down.png"));
 		this.setEnabled(true);
 		this.putValue(SHORT_DESCRIPTION, "Add a new Tab");
 		this.putValue(LONG_DESCRIPTION, "Add a new Tab");
@@ -19,8 +21,7 @@ public class RemovePanelAction extends AntRunnerAction {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		try {
-			this.antrunner.leftpanelHolder.removeTabAt(this.antrunner.leftpanelHolder.getSelectedIndex());
-			this.antrunner.configurationChanged();
+			this.antrunner.moveCurrentTab(1);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

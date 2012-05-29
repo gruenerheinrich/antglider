@@ -31,6 +31,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.centauron.utility.ArrayListTransferHandler;
+import org.centauron.utility.FileUtility;
 import org.centauron.utility.PopupMenuAdapter;
 import org.centauron.utility.TreeTransferHandler;
 import org.centauron.utility.VerticalFlowLayout;
@@ -43,11 +44,12 @@ public class AntRunnerPanel extends JPanel {
 	public DefaultTreeModel fullModel;
 	private JPopupMenu popup;
 	public AntRunner antrunner;
+	public File m_ifile;
 	public AntRunnerPanel(AntRunner ar,String icon,String name) throws Exception {
 		super(new BorderLayout(5,5));
 		antrunner=ar;
 		m_caption=name;
-		m_icon=AntRunner.getScaledIconFromImageName(icon,20,20);
+		setIconName(icon);
 		
 		popup=new JPopupMenu();
 		popup.add(ar.getFactory().getActionForName("AddDirAction"));
@@ -184,6 +186,17 @@ public class AntRunnerPanel extends JPanel {
 	public Icon getIcon() {
 		return m_icon;
 	}
+	public void setIconName(String icon) {
+		if (icon==null) return;
+		if (icon.length()==0) return;
+		m_ifile=antrunner.getAbsolutFileRelativeToConfig(icon);
+		if (!m_ifile.exists()) {
+			m_ifile=null;
+			m_icon=null;
+			return;
+		}
+		m_icon=antrunner.getScaledIconFromImageName(icon,20,20);	
+	}	
 	public void addBuildFile(File file) {
 		this.addBuildFile(file, null);
 	}
@@ -277,6 +290,11 @@ public class AntRunnerPanel extends JPanel {
 		if (tp==null) return null;
 		return (AntRunnerNode)tp.getLastPathComponent();
 	}
+	
+	public boolean isElement(AntRunnerNode an) {
+		return (an.getRoot()==rootNode);
+	}
+	
 	public DefaultMutableTreeNode getRootNode() {
 		return rootNode;
 		
@@ -294,6 +312,23 @@ public class AntRunnerPanel extends JPanel {
 		rootNode.insert((MutableTreeNode) el, idx+i);
 		this.reloadTree();
 		tree.setSelectionPath(tp);
+	}
+	public AntRunnerNode findNodeFor(File file, String target) {
+		return findNodeFor(rootNode,file,target);
+	}
+	private AntRunnerNode findNodeFor(DefaultMutableTreeNode node,File file, String target) {
+		for (int i=0;i<node.getChildCount();i++) {
+			AntRunnerNode an=(AntRunnerNode)node.getChildAt(i);
+			if (FileUtility.sameFile(an.getBuildFile(),file) && an.getTargetName().equalsIgnoreCase(target)) {
+				return an;
+			}
+			AntRunnerNode ax=this.findNodeFor(an,file, target);
+			if (ax!=null) return ax;
+		}
+		return null;
+	}
+	public void selectNode(AntRunnerNode node) {
+		tree.setSelectionPath(new TreePath(node.getPath()));
 	}
 	
 }

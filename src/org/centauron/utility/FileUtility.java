@@ -64,4 +64,12 @@ public class FileUtility {
 		//TODO 
 		return false;
 	}
+	public static boolean sameFile(File file1, File file2) {
+		if (file1==null && file2==null) return true;
+		if (file1==null) return false;
+		if (file2==null) return false;
+		File f1=file1.getAbsoluteFile();
+		File f2=file2.getAbsoluteFile();
+		return f1.equals(f2);
+	}
 }

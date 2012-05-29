@@ -34,7 +34,8 @@ public class SaveAsConfigFileAction extends AntRunnerAction {
 				this.antrunner.saveConfigFile(file.getPath());
 			} catch (Exception e1) {
 				//ERROR OPENING
-				JOptionPane.showMessageDialog(this.antrunner, "Error opening File","AntRunner",JOptionPane.ERROR_MESSAGE);
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this.antrunner, "Error saving File","AntRunner",JOptionPane.ERROR_MESSAGE);
 			}
 		}        
 	}

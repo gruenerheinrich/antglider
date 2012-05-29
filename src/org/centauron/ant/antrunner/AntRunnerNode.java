@@ -87,7 +87,6 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 		JPopupMenu pop=new JPopupMenu();
 		if (m_mode==AntRunnerNode.MODE_STANDALONEBUILDFILE) {
 			pop.add(this.antrunner.getFactory().getActionForName("RunDefaultAction"));
-			pop.add(this.antrunner.getFactory().getActionForName("AddToShortCutAction"));
 			pop.add(this.antrunner.getFactory().getActionForName("RefreshFileAction"));
 			pop.addSeparator();
 			pop.add(this.antrunner.getFactory().getActionForName("RemoveNodeAction"));
@@ -99,13 +98,14 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 		if (m_mode==AntRunnerNode.MODE_TARGET || m_mode==AntRunnerNode.MODE_DEFAULTTARGET) {
 			pop.add(this.antrunner.getFactory().getActionForName("RunAction"));
 			pop.add(this.antrunner.getFactory().getActionForName("BatchAddSelectedAction"));
+			eventuallyAddShortCut(pop);
 			pop.add(this.antrunner.getFactory().getActionForName("LoadStatisticsAction"));			
 		}
 		if (m_mode==AntRunnerNode.MODE_STANDALONETARGET) {
 			pop.add(this.antrunner.getFactory().getActionForName("RunAction"));
 			//TODO ADD TO SHORTCUT
-			//pop.add(this.antrunner.getFactory().getActionForName("BatchAddSelectedAction"));
-			pop.add(this.antrunner.getFactory().getActionForName("AddToShortCutAction"));
+			pop.add(this.antrunner.getFactory().getActionForName("BatchAddSelectedAction"));
+			eventuallyAddShortCut(pop);
 			pop.add(this.antrunner.getFactory().getActionForName("LoadStatisticsAction"));			
 			pop.addSeparator();
 			pop.add(this.antrunner.getFactory().getActionForName("RemoveNodeAction"));
@@ -116,6 +116,15 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 			pop.add(this.antrunner.getFactory().getActionForName("RemoveNodeAction"));			
 		}
 		return pop;
+	}
+	private void eventuallyAddShortCut(JPopupMenu pop) throws Exception {
+		if (this.antrunner.isShortCutEnabled()) {
+			if (this.antrunner.isShortCut(this)) {
+				pop.add(this.antrunner.getFactory().getActionForName("shortcut.RemoveShortCutAction"));					
+			} else {
+				pop.add(this.antrunner.getFactory().getActionForName("shortcut.AddShortCutAction"));
+			}
+		}
 	}
 	@Override
 	public void buildFinished(BuildEvent arg0) {
