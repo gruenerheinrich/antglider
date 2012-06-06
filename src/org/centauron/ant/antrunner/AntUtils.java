@@ -7,6 +7,8 @@ import java.io.StringWriter;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
+import org.apache.tools.ant.launch.AntMain;
+
 
 public class AntUtils {
 	public static BuildFileInfo getBuildFileInfo(File file) throws Exception {

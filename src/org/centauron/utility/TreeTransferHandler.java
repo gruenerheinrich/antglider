@@ -33,7 +33,7 @@ public class TreeTransferHandler extends TransferHandler {
             nodesFlavor = new DataFlavor(mimeType);  
             flavors[0] = nodesFlavor;  
         } catch(ClassNotFoundException e) {  
-            System.out.println("ClassNotFound: " + e.getMessage());  
+           e.printStackTrace();
         }  
     }  
    
@@ -172,9 +172,9 @@ public class TreeTransferHandler extends TransferHandler {
             Transferable t = support.getTransferable();  
             nodes = (DefaultMutableTreeNode[])t.getTransferData(nodesFlavor);  
         } catch(UnsupportedFlavorException ufe) {  
-            System.out.println("UnsupportedFlavor: " + ufe.getMessage());  
+           	ufe.printStackTrace(); 
         } catch(java.io.IOException ioe) {  
-            System.out.println("I/O error: " + ioe.getMessage());  
+            ioe.printStackTrace();  
         }  
         // Get drop location info.  
         JTree.DropLocation dl =  

@@ -260,15 +260,16 @@ package org.centauron.utility;
 						y = targetSize.height - preferredSize.height - insets.bottom;
 						break;
 				}
-
+				Dimension td=target.getSize();
+				td.width-=(target.getInsets().left+target.getInsets().right);
+						
 				for (int i = 0; i < nmembers; i++) {
 					Component m = target.getComponent(i);
 					if (m.isVisible()) {
 						Dimension d = m.getPreferredSize();
-						m.setSize(d.width, d.height);
-
-						if ((y + d.height) <= maxheight) {
-							if (y > 0) {
+						//m.setSize(d.width, d.height);
+						m.setSize(td.width,d.height);
+							if (i > 0) {
 								y += _vgap;
 							}
 
@@ -289,10 +290,6 @@ package org.centauron.utility;
 
 							y += d.getHeight();
 
-						}
-						else {
-							break;
-						}
 					}
 				}
 			}

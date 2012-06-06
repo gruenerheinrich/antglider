@@ -1,22 +1,38 @@
 <project name="antglider" default="generate" basedir=".">
-    <target name="generate">
-    	<path id="project.class.path">
-    	    <pathelement path="${java.class.path}" />
-    	</path>    	
-    	<mkdir dir="out"/>
-    	  <delete includeemptydirs="true">
-    	    <fileset dir="out" includes="**/*"/>
-    	  </delete>    	
-        <javac srcdir="./src" destdir="out" source="1.5">
+    <path id="project.class.path">
+            <pathelement path="${java.class.path}" />
+    </path>      
+	<target name="prepare">
+        <mkdir dir="out"/>
+          <delete includeemptydirs="true">
+            <fileset dir="out" includes="**/*"/>
+          </delete>     
+        <mkdir dir="jar"/>		
+    </target>
+	<target name="generate" depends="prepare">
+        <javac srcdir="./src" destdir="out" source="1.5" target="1.5">
         	<classpath refid="project.class.path" />
         </javac>
-    	<!--copy ressources-->
     	<copy todir="out/resources">
     	    <fileset dir="src/resources"/>
     	</copy>
-        <mkdir dir="jar"/>
-        <jar destfile="jar/antdoclet.jar">
+        <jar destfile="jar/antglider.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.centauron.ant.antrunner.AntRunner"/>
+                <attribute name="Built-By" value="centauron"/>
+                <attribute name="Class-Path" value="ant.jar"/>
+            </manifest>         	
           <fileset dir="out"/>
         </jar>
-    </target>
+    	<copy todir="D:\apache-ant-1.8.2\lib" file="jar/antglider.jar"/>
+        <copy todir="D:\apache-ant-1.8.2\bin" file="antglider.bat"/>
+	</target>	
+	<target name="createzipfile">
+		<property file="version.properties"/>
+		<zip destfile="download/antglider-${version}.zip" update="true">
+		   <zipfileset dir="." includes="antglider.bat" prefix="bin"/>
+	       <zipfileset dir="jar" prefix="lib"/>
+	       <zipfileset dir="." includes="readme.txt"/>		   
+		</zip>
+	</target>
 </project>

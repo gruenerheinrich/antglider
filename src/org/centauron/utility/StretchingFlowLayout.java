@@ -11,7 +11,9 @@ public class StretchingFlowLayout extends FlowLayout {
 	public StretchingFlowLayout(int left, int i, int j) {
 		super(left,i,j);
 	}
-
+	public StretchingFlowLayout(int left) {
+		super(left,0,0);
+	}
 	/**
 	 *  Description of the Method
 	 *

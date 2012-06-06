@@ -24,8 +24,7 @@ public class ArrayListTransferHandler extends TransferHandler {
         try {
             localArrayListFlavor = new DataFlavor(localArrayListType);
         } catch (ClassNotFoundException e) {
-            System.out.println(
-             "ArrayListTransferHandler: unable to create data flavor");
+        	e.printStackTrace();
         }
         serialArrayListFlavor = new DataFlavor(ArrayList.class,
                                               "ArrayList");
@@ -47,10 +46,10 @@ public class ArrayListTransferHandler extends TransferHandler {
                 return false;
             }
         } catch (UnsupportedFlavorException ufe) {
-            System.out.println("importData: unsupported data flavor");
+            ufe.printStackTrace();
             return false;
         } catch (IOException ioe) {
-            System.out.println("importData: I/O exception");
+        	ioe.printStackTrace();
             return false;
         }
 

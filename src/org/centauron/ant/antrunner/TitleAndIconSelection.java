@@ -136,7 +136,7 @@ public class TitleAndIconSelection extends JDialog implements ActionListener {
 		}
 	}
 
-	@Override
+
 	public void actionPerformed(ActionEvent e) {
 		String text=((JButton)e.getSource()).getText();
 		if (text.equalsIgnoreCase("Add") || text.equalsIgnoreCase("Edit")) {

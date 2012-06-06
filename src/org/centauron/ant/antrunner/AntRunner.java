@@ -41,6 +41,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -56,7 +57,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 
-import org.apache.tools.ant.util.FileUtils;
+import org.apache.tools.ant.launch.AntMain;
 import org.centauron.ant.antrunner.actions.shortcut.ShortCutAction;
 import org.centauron.utility.FileUtility;
 import org.centauron.utility.PopupMenuAdapter;
@@ -69,7 +70,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class AntRunner extends JFrame {
+
+public class AntRunner extends JFrame implements AntMain {
 	public final static int SAVEMODUS_ALWAYSRELATIVE=0;
 	public final static int SAVEMODUS_ALWAYSABSOLUTE=1;
 	public final static int SAVEMODUS_ABSOLUTEWHENNONSUB=2;
@@ -77,12 +79,14 @@ public class AntRunner extends JFrame {
 	public static final int SHORTCUTMODE_HIDE = 0;
 	public static final int SHORTCUTMODE_DISPLAY = 1;
 	public static final String applicatonName = "AntGlider";
+	private static final boolean dologging=true;
 
 	private File m_configfile;
 	private JPanel shortcutpanel;
 	private JPanel shortcutholder;
 	private JMenuBar  themenubar;
 	public JTabbedPane leftpanelHolder;
+	private boolean leftpanelValidated;
 	public JTabbedPane rightpanelHolder;
 	private Properties myProperties;
 	private AntRunnerActionFactory m_factory;
@@ -101,6 +105,7 @@ public class AntRunner extends JFrame {
 	private boolean m_configfilechanged;
 	private int m_shortcutmode;
 	private AntRunnerButton m_currentshortcut;
+	public ClassLoader coreLoader;
 	public AntRunner() throws Exception {
 		m_factory=new AntRunnerActionFactory(this);
 		shortcutpanel=new JPanel(new StretchingFlowLayout(StretchingFlowLayout.LEFT,3,3));
@@ -164,6 +169,8 @@ public class AntRunner extends JFrame {
 		file.add(m_factory.getActionForName("SaveAsConfigFileAction"));
 		file.addSeparator();
 		file.add(m_factory.getActionForName("RefreshFileAction"));
+		file.addSeparator();
+		file.add(m_factory.getActionForName("OptionAction"));		
 		file.addSeparator();		
 		file.add(m_factory.getActionForName("CloseAction"));
 		themenubar.add(file);
@@ -252,10 +259,19 @@ public class AntRunner extends JFrame {
 	private void validateShortCutPanel() {
 		//TODO 
 	}
-	private void validateLeftPanel() throws Exception {
-		if (leftpanelHolder.getTabCount()==0) {
-			this.addPanel("", "newpanel");
+	public void validateLeftPanel() throws Exception {
+		if (leftpanelValidated) {
+			if (leftpanelHolder.getTabCount()==2) {
+				leftpanelValidated=false;
+				this.leftpanelHolder.removeTabAt(0);
+			}
+		} else {
+			if (leftpanelHolder.getTabCount()==0) {
+				this.addPanel("", "newpanel");
+			}
+			leftpanelValidated=true;
 		}
+		
 		
 	}
 	private void unArmPanelActions() throws Exception {
@@ -274,9 +290,7 @@ public class AntRunner extends JFrame {
 		getFactory().getActionForName("panel.AddPanelAction").setEnabled(true);
 		if (idx==-1) return;
 		getFactory().getActionForName("panel.EditPanelAction").setEnabled(true);
-		if (i!=1) {
-			getFactory().getActionForName("panel.RemovePanelAction").setEnabled(true);
-		}
+		getFactory().getActionForName("panel.RemovePanelAction").setEnabled(true);
 		if (idx!=0)  {
 			getFactory().getActionForName("panel.MoveBackwardPanelAction").setEnabled(true);
 		}
@@ -307,6 +321,7 @@ public class AntRunner extends JFrame {
 		leftpanelHolder.addTab(pan.getCaption(), pan.getIcon(), pan);
 		leftpanelHolder.setSelectedComponent(pan);
 		configurationChanged();
+		validateLeftPanel();
 		return pan;
 	}
 	
@@ -316,7 +331,7 @@ public class AntRunner extends JFrame {
 	
 	public File getAbsolutFileRelativeToConfig(String file) {
 		File ff;
-		if (!FileUtils.isAbsolutePath(file)) {
+		if (!FileUtility.isAbsolutePath(file)) {
 			ff=new File(this.getConfigDir(),file);
 		} else {
 			ff=new File(file);
@@ -380,7 +395,7 @@ public class AntRunner extends JFrame {
 			
 			this.m_configfilechanged=false;
 			this.refreshTitle();
-			this.revalidate();
+			this.validate();
 		} else {
 			throw new Exception("File does not exitst");
 		}
@@ -502,7 +517,7 @@ public class AntRunner extends JFrame {
 		
 		myProperties.put("application.divider",Double.toString(getDividerPercentage()));		
 		
-		File file=new File(System.getProperty("user.home") ,"antrunner.properties");
+		File file=new File(System.getProperty("user.home") ,"antglider.properties");
 		myProperties.store(new FileOutputStream(file),"last changed - " +(new SimpleDateFormat()).format(new Date()));
 	}	
 	private double getDividerPercentage() {
@@ -586,42 +601,86 @@ public class AntRunner extends JFrame {
 		} else {
 			shortcutholder.add("Center",shortcutpanel);
 		}
-		this.revalidate();
+		this.validate();
 	}
 
 	public void loadProperties() throws Exception {
 		
 		
 		myProperties=new Properties();
-		File file=new File(System.getProperty("user.home") ,"antrunner.properties");
+		File file=new File(System.getProperty("user.home") ,"antglider.properties");
 		if (file.exists()) {
 			myProperties.load(new FileInputStream(file));
 		}
 	}
 
-	
-	public static void main(String[] args) {
-		//PARSE PARAMS
+
+	private static void printOutArgs(String[] args) {
+		if (args.length==0) {
+			AntRunner.logout("ARG : NO ARGS ");			
+		}
+		for (int i=0;i<args.length;i++) {
+			AntRunner.logout("ARG "+ i +" :"+args[i]);
+		}
+	}
+
+
+	public void startAnt(String[] args, Properties additionalUserProperties,
+			ClassLoader coreLoader) {
+		AntRunner.printOutArgs(args);		
 		try {
+			this.coreLoader=coreLoader;
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			AntRunner ar=new AntRunner();
-			if (args.length==1) {
-				ar.initConfigFile(args[0]);
+			SwingUtilities.updateComponentTreeUI(this);
+			
+			String configfile=AntRunner.examineConfigFileFromArgs(args);
+			if (configfile!=null) {
+				this.initConfigFile(configfile);
 			} else {
 				File file=new File(".");
-				ar.setLastFile(file);
-				ar.openNewFile();
+				this.setLastFile(file);
+				this.openNewFile();
 				
 			}
 				
-			ar.loadProperties();
+			this.loadProperties();
 			
-			ar.setVisible(true);
-			ar.resetLast();
+			this.setVisible(true);
+			this.resetLast();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	}	
+	private static String examineConfigFileFromArgs(String[] args) {
+		int i=AntRunner.getIndexFromArgs(args,"-configfile");
+		if (i!=-1) return AntRunner.getArg(args,i+1);
+		if (args.length==1) {
+			return args[0];
+		}
+		return null;
+	}
+
+	private static String getArg(String[] args, int i) {
+		if (args.length>i) return args[i];
+		return null;
+	}
+
+	private static int getIndexFromArgs(String[] args, String string) {
+		for (int i=0;i<args.length;i++) {
+			if (args[i].equalsIgnoreCase(string)) return i;
+		}
+		return -1;
+	}
+
+	public static void main(String[] args) {
+		AntRunner ar;
+		try {
+			ar = new AntRunner();
+			ar.startAnt(args, null, AntRunner.class.getClassLoader());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void openNewFile() {
@@ -735,7 +794,7 @@ public class AntRunner extends JFrame {
 		return file.getAbsolutePath();
 	}
 
-	private int getSaveModus() {
+	int getSaveModus() {
 		return this.m_savemodus;
 	}
 
@@ -821,7 +880,8 @@ public class AntRunner extends JFrame {
 		this.shortcutpanel.remove(m_currentshortcut);
 		m_currentshortcut=null;
 		this.configurationChanged();
-		this.revalidate();
+		this.invalidate();
+		this.validate();
 	}
 
 	public void moveCurrentShortCut(int i) {
@@ -831,7 +891,8 @@ public class AntRunner extends JFrame {
 		vc.insertElementAt(this.getCurrentShortCut(),idx+i);
 		shortcutpanel.removeAll();
 		Utility.putVectorToConainer(shortcutpanel, vc);
-		this.revalidate();		
+		this.invalidate();
+		this.validate();		
 	}
 
 	public void setCurrentShortCut(AntRunnerButton antRunnerButton) throws Exception {
@@ -860,5 +921,22 @@ public class AntRunner extends JFrame {
 		}
 	}
 
+
+	private static void logout(String string) {
+		if (dologging) {
+			System.out.println(string);
+		}
+	}
+
+	public static void printOutArray(URL[] s) {
+		for (int i=0;i<s.length;i++) {
+			AntRunner.logout(s[i].toString());
+		}
+		
+	}
+
+	public int getShortCutMode() {
+		return this.m_shortcutmode;
+	}
 
 }

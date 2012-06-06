@@ -75,7 +75,7 @@ public class AddTargetAction extends AntRunnerAction implements PropertyChangeLi
 		
 		
 	}
-	@Override
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
 			
@@ -90,8 +90,7 @@ public class AddTargetAction extends AntRunnerAction implements PropertyChangeLi
 							cb.setSelected(true);
 						}
 						targetlist.add(cb);
-						targetlist.doLayout();
-						targetlist.revalidate();
+						targetlist.validate();
 
 					}
 					targetlist.setEnabled(true);

@@ -30,7 +30,7 @@ public class AddShortCutAction extends AntRunnerAction {
 			tis.setVisible(true);
 			if (tis.getResult()==TitleAndIconSelection.RESULT_OK) {
 				this.antrunner.addShortCut(this.antrunner.getCurrentPanel().getCurrentElement(),tis.getIconText(),tis.getTitleText());		
-				this.antrunner.revalidate();
+				this.antrunner.validate();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

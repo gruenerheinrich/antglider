@@ -46,12 +46,11 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import org.apache.tools.ant.BuildEvent;
-import org.apache.tools.ant.BuildListener;
 import org.centauron.utility.ArrayListTransferHandler;
 import org.centauron.utility.PopupMenuAdapter;
 import org.centauron.utility.Utility;
 import org.centauron.utility.VerticalFlowLayout;
+
 
 
 public class AntRunnerBatchView extends JPanel {

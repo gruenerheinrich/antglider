@@ -52,37 +52,36 @@ public class AntRunnerConsole extends JPanel implements BuildListener {
 	
 
 	
-	@Override
 	public void buildFinished(BuildEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+
 	public void buildStarted(BuildEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+
 	public void messageLogged(BuildEvent arg0) {
 		
 		this.setMessage(arg0.getMessage());
 	}
-	@Override
+
 	public void targetFinished(BuildEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+
 	public void targetStarted(BuildEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+
 	public void taskFinished(BuildEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+
 	public void taskStarted(BuildEvent arg0) {
 		// TODO Auto-generated method stub
 		

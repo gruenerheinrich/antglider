@@ -25,7 +25,7 @@ public class OpenConfigFileAction extends AntRunnerAction {
 		// TODO Auto-generated method stub
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(this.antrunner.getLastFile());
-		FileFilter filter=new FileNameExtensionFilter("AntRunner Config-Files(*.xml)", "xml"); 		
+		FileFilter filter=new FileNameExtensionFilter("AntGlider Config-Files(*.xml)", "xml"); 		
 		fc.setFileFilter(filter);
 		int ret=fc.showOpenDialog(this.antrunner);
 		if (ret == JFileChooser.APPROVE_OPTION) {

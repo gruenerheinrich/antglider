@@ -34,7 +34,8 @@ public class EditShortCutAction extends AntRunnerAction {
 				this.antrunner.getCurrentShortCut().setText(tis.getTitleText());	
 				this.antrunner.getCurrentShortCut().setIconName(tis.getIconText());
 				this.antrunner.configurationChanged();
-				this.antrunner.revalidate();
+				this.antrunner.invalidate();
+				this.antrunner.validate();
 			}			
 		} catch (Exception ex) {
 			ex.printStackTrace();

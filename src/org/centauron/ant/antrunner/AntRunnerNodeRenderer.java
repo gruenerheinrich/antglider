@@ -82,7 +82,7 @@ public class AntRunnerNodeRenderer extends DefaultTreeCellRenderer implements Li
 		}
 	}
 
-	@Override
+
 	public Component getListCellRendererComponent(JList list, Object value,int index, boolean isSelected, boolean cellHasFocus) {
 		JComponent p=getComponentFromAntRunnerNode((AntRunnerNode)value,isSelected);
 		if (index%2==1 && !isSelected) {

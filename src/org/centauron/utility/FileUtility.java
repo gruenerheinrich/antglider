@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtility {
+    private static final boolean ON_NETWARE = Os.isFamily("netware");
+    private static final boolean ON_DOS = Os.isFamily("dos");
+    private static final boolean ON_WIN9X = Os.isFamily("win9x");
+    private static final boolean ON_WINDOWS = Os.isFamily("windows");	
 	private static List getPathList(File f) {
 		List l = new ArrayList();
 		File r;
@@ -72,4 +76,30 @@ public class FileUtility {
 		File f2=file2.getAbsoluteFile();
 		return f1.equals(f2);
 	}
+    public static boolean isAbsolutePath(String filename) {
+        int len = filename.length();
+        if (len == 0) {
+            return false;
+        }
+        char sep = File.separatorChar;
+        filename = filename.replace('/', sep).replace('\\', sep);
+        char c = filename.charAt(0);
+        if (!(ON_DOS || ON_NETWARE)) {
+            return (c == sep);
+        }
+        if (c == sep) {
+            // CheckStyle:MagicNumber OFF
+            if (!(ON_DOS && len > 4 && filename.charAt(1) == sep)) {
+                return false;
+            }
+            // CheckStyle:MagicNumber ON
+            int nextsep = filename.indexOf(sep, 2);
+            return nextsep > 2 && nextsep + 1 < len;
+        }
+        int colon = filename.indexOf(':');
+        return (Character.isLetter(c) && colon == 1
+                && filename.length() > 2 && filename.charAt(2) == sep)
+                || (ON_NETWARE && colon > 0);
+    }
+
 }

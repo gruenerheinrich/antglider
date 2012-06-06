@@ -46,11 +46,10 @@ public class AntRunnerPanel extends JPanel {
 	public AntRunner antrunner;
 	public File m_ifile;
 	public AntRunnerPanel(AntRunner ar,String icon,String name) throws Exception {
-		super(new BorderLayout(5,5));
+		super(new BorderLayout(0,0));
 		antrunner=ar;
 		m_caption=name;
-		setIconName(icon);
-		
+		setIconName(icon);		
 		popup=new JPopupMenu();
 		popup.add(ar.getFactory().getActionForName("AddDirAction"));
 		popup.add(ar.getFactory().getActionForName("AddFileAction"));
@@ -65,7 +64,7 @@ public class AntRunnerPanel extends JPanel {
 		tree.setRowHeight(0);
 		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener(){
 
-			@Override
+
 			public void valueChanged(TreeSelectionEvent e) {
 				// TODO Auto-generated method stub
 				try {
@@ -81,7 +80,7 @@ public class AntRunnerPanel extends JPanel {
 			
 		});
 		tree.setDragEnabled(true);
-		
+		tree.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		tree.setTransferHandler(new TreeTransferHandler());
 		JPanel searchPanel=new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
 		JLabel flabel=new JLabel("Filter:",antrunner.getResourceImageIcon("search.png"),0);
@@ -100,7 +99,10 @@ public class AntRunnerPanel extends JPanel {
 		toppanel.add("Center",searchPanel);
 		toppanel.add("East",buttonPanel);
 		this.add("North",toppanel);
-		this.add("Center",new JScrollPane(tree));
+		JPanel inpanel=new JPanel(new BorderLayout(5,5));
+		inpanel.add("Center",new JScrollPane(tree));
+		inpanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		this.add("Center",inpanel);
 		this.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		tree.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
@@ -118,9 +120,11 @@ public class AntRunnerPanel extends JPanel {
 						AntRunnerNode an=(AntRunnerNode)tp.getLastPathComponent();
 						JPopupMenu pop=an.getPopupMenu();
 						pop.show((Component) e.getSource(), e.getX(), e.getY());
+						return;
 					}
 					if (e.getButton()==MouseEvent.BUTTON1 && e.getClickCount()==2) {
 						TreePath tp=tree.getPathForLocation(e.getX(), e.getY());
+						if (tp==null) return;
 						if (!tp.equals(tree.getSelectionPath())) {
 							tree.setSelectionPath(tp);
 						}
@@ -128,6 +132,15 @@ public class AntRunnerPanel extends JPanel {
 						if (an.isTarget()) {
 							an.getAntRunner().startAntRunnerNode(an);	
 						}
+						return;
+					}
+					if (e.getButton()==MouseEvent.BUTTON1) {
+						TreePath tp=tree.getPathForLocation(e.getX(), e.getY());
+						/*
+						if (tp==null) {
+							tree.setSelectionPath(null);
+						}	
+						*/					
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -274,7 +287,6 @@ public class AntRunnerPanel extends JPanel {
 		for (File f:flist) {
 			if (!f.isHidden()) {
 				if (f.isFile()) {
-					System.out.println("DO:"+f.getAbsolutePath());
 					boolean res=this.addBuildFile(f, dnode);
 					atleastone=atleastone || res;
 				} else {
