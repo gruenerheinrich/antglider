@@ -26,6 +26,8 @@ REM support, things would be much easier, but sadly, it is not yet time.
 REM Be cautious about editing this, and only add WinNT specific stuff in code that
 REM only runs on WinNT.
 
+echo Here
+
 if "%HOME%"=="" goto homeDrivePathPre
 if exist "%HOME%\antrc_pre.bat" call "%HOME%\antrc_pre.bat"
 
@@ -133,14 +135,14 @@ if not "%JIKESPATH%"=="" goto runAntWithJikes
 :runAnt
 if "%_USE_CLASSPATH%"=="no" goto runAntNoClasspath
 :runAntWithClasspath
-"%_JAVACMD%" %ANT_OPTS% -classpath "%ANT_HOME%\lib\antglider.jar" "-Dant.home=%ANT_HOME%" org.apache.tools.ant.launch.Launcher %ANT_ARGS% -cp "%CLASSPATH%" %ANT_CMD_LINE_ARGS%
+"%_JAVACMD%" %ANT_OPTS% -classpath "%ANT_HOME%\lib\antglider.jar" "-Dant.home=%ANT_HOME%" org.centauron.ant.antrunner.AntRunner %ANT_ARGS% -cp "%CLASSPATH%" %ANT_CMD_LINE_ARGS%
 rem Check the error code of the Ant build
 if not "%OS%"=="Windows_NT" goto onError
 set ANT_ERROR=%ERRORLEVEL%
 goto end
 
 :runAntNoClasspath
-"%_JAVACMD%" %ANT_OPTS% -classpath "%ANT_HOME%\lib\antglider.jar" "-Dant.home=%ANT_HOME%" org.centauron.ant.antrunner.AntRunner %ANT_ARGS% %ANT_CMD_LINE_ARGS%
+"%_JAVACMD%" %ANT_OPTS% -classpath "%ANT_HOME%\lib\antglider.jar" "-Dant.home=%ANT_HOME%" org.apache.tools.ant.launch.Launcher %ANT_ARGS% %ANT_CMD_LINE_ARGS%
 rem Check the error code of the Ant build
 if not "%OS%"=="Windows_NT" goto onError
 set ANT_ERROR=%ERRORLEVEL%

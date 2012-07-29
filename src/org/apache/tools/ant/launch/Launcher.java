@@ -41,6 +41,7 @@ import org.centauron.ant.antrunner.AntRunner;
  */
 public class Launcher {
 
+	public static String[] startArgs;
     /**
      * The Ant Home (installation) Directory property.
      * {@value}
@@ -68,7 +69,7 @@ public class Launcher {
     /**
      * launch diagnostics flag; for debugging trouble at launch time.
      */
-    public static boolean launchDiag = false;
+    public static boolean launchDiag = true;
 
     /**
      * The location of a per-user library directory.
@@ -169,18 +170,25 @@ public class Launcher {
      * @param args the command line arguments
      * @return an exit code. As the normal ant main calls exit when it ends,
      *         this is for handling failures at bind-time
+     * @throws LaunchException 
+     * @throws MalformedURLException 
      * @throws MalformedURLException if the URLs required for the classloader
      *            cannot be created.
      * @throws LaunchException for launching problems
      */
-    int run(String[] args)
+    int run(String[] args) throws MalformedURLException, LaunchException {
+    	//STORE THE ARGS FOR FURTHER CALLS
+    	startArgs=args;
+    	return run(args,MAIN_CLASS);
+    }
+    public int run(String[] args,String mainclass)
             throws LaunchException, MalformedURLException {
         String antHomeProperty = System.getProperty(ANTHOME_PROPERTY);
         File antHome = null;
 
         File sourceJar = Locator.getClassSource(getClass());
         File jarDir = sourceJar.getParentFile();
-        String mainClassname = MAIN_CLASS;
+        String mainClassname = mainclass;
 
         if (antHomeProperty != null) {
             antHome = new File(antHomeProperty);
@@ -278,6 +286,9 @@ public class Launcher {
         setProperty(JAVA_CLASS_PATH, baseClassPath.toString());
 
         URLClassLoader loader = new URLClassLoader(jars);
+        AntRunner.logout("URL CLASS LOADER IS:"+loader);
+        AntRunner.printOutArray(loader.getURLs());
+        
         Thread.currentThread().setContextClassLoader(loader);
         Class mainClass = null;
         int exitCode = 0;

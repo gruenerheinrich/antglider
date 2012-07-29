@@ -107,6 +107,7 @@ public class AntRunner extends JFrame implements AntMain {
 	private AntRunnerButton m_currentshortcut;
 	public ClassLoader coreLoader;
 	public AntRunner() throws Exception {
+		//AntUtils.mainClassLoader=Thread.currentThread().getContextClassLoader();
 		m_factory=new AntRunnerActionFactory(this);
 		shortcutpanel=new JPanel(new StretchingFlowLayout(StretchingFlowLayout.LEFT,3,3));
 		validateShortCutPanel();
@@ -630,6 +631,9 @@ public class AntRunner extends JFrame implements AntMain {
 		AntRunner.printOutArgs(args);		
 		try {
 			this.coreLoader=coreLoader;
+			if (this.coreLoader==null) {
+				this.coreLoader=Thread.currentThread().getContextClassLoader();
+			}
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SwingUtilities.updateComponentTreeUI(this);
 			
@@ -922,7 +926,7 @@ public class AntRunner extends JFrame implements AntMain {
 	}
 
 
-	private static void logout(String string) {
+	public static void logout(String string) {
 		if (dologging) {
 			System.out.println(string);
 		}

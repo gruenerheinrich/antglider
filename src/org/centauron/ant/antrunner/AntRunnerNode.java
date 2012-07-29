@@ -142,20 +142,23 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 	}
 
 	public void targetFinished(BuildEvent arg0) {
-		// TODO Auto-generated method stub
-		m_running=false;	
-		//NOTIFY THE TREE
-		//this.setLastResult(RESULT_SUCCESS);
+		this.informTargetFinished();
 	}
 
 	public void targetStarted(BuildEvent arg0) {
-		// TODO Auto-generated method stub
+		this.informTargetStarted();
+	}
+	
+	public void informTargetFinished() {
+		m_running=false;			
+	}
+	
+	public void informTargetStarted() {
 		m_running=true;
 		m_starttime=new Date();
-		startUpdaterThread();
-		//NOTIFY THE TREE
-		//this.setLastResult(0);
+		startUpdaterThread();		
 	}
+	
 	private void startUpdaterThread() {
 			final AntRunnerNode node=this;
 			Thread t=new Thread() {

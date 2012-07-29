@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <config>
-<panel caption="test">
+<panel caption="test" icon="">
 <target buildfile="javascript.xml">js.theDefaultTarget</target>
 <buildfile>javascript.xml</buildfile>
 <dir>somemore</dir>
+<buildfile>..\..\..\..\Desktop\::{20D04FE0-3AEA-1069-A2D8-08002B30309D}\\Projekte\testsuite\example_testcases\helloworld.xml</buildfile>
 </panel>
-<shortcut icon="bomb.png" buildfile="javascript.xml" target="js.timer"/>
-<shortcut icon="box.png" title="GO" buildfile="javascript.xml" target="js.long.task.10s"/>
+<shortcut buildfile="javascript.xml" icon="bomb.png" target="js.timer" title=""/>
+<shortcut buildfile="javascript.xml" icon="box.png" target="js.long.task.10s" title="GO"/>
 </config>

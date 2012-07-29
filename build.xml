@@ -1,7 +1,8 @@
 <project name="antglider" default="generate" basedir=".">
-    <path id="project.class.path">
+    <property name="antpath" value="D:/java_apache_ant"/>
+	<path id="project.class.path">
             <pathelement path="${java.class.path}" />
-    </path>      
+    </path>  
 	<target name="prepare">
         <mkdir dir="out"/>
           <delete includeemptydirs="true">
@@ -17,16 +18,25 @@
     	    <fileset dir="src/resources"/>
     	</copy>
         <jar destfile="jar/antglider.jar">
-            <manifest>
-                <attribute name="Main-Class" value="org.centauron.ant.antrunner.AntRunner"/>
+        	<manifest>
+                <!--
+        		<attribute name="Main-Class" value="org.centauron.ant.antrunner.AntRunner"/>
+                -->
+        		<attribute name="Main-Class" value="org.apache.tools.ant.launch.Launcher"/>
                 <attribute name="Built-By" value="centauron"/>
                 <attribute name="Class-Path" value="ant.jar"/>
             </manifest>         	
           <fileset dir="out"/>
         </jar>
-    	<copy todir="D:\apache-ant-1.8.2\lib" file="jar/antglider.jar"/>
-        <copy todir="D:\apache-ant-1.8.2\bin" file="antglider.bat"/>
+    	<copy todir="${antpath}/lib" file="jar/antglider.jar"/>
+        <copy todir="${antpath}/bin" file="antglider.bat"/>
 	</target>	
+	<target name="generate and test" depends="generate">
+		<exec executable="${antpath}/bin/antglider.bat" dir="${antpath}/bin/">
+			<env key="ANT_HOME" value="D:/java_apache_ant"/>
+			<arg value="${basedir}/examples/micro.xml"/>
+		</exec>
+	</target>
 	<target name="createzipfile">
 		<property file="version.properties"/>
 		<zip destfile="download/antglider-${version}.zip" update="true">

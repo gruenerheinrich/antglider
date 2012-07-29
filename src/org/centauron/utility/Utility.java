@@ -3,6 +3,8 @@ package org.centauron.utility;
 import java.awt.Component;
 import java.awt.Container;
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -16,6 +18,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import org.apache.tools.ant.launch.AntMain;
 import org.centauron.ant.antrunner.AntRunnerBatchView;
 import org.centauron.ant.antrunner.AntRunnerNode;
 
@@ -90,6 +93,46 @@ public class Utility {
 		}
 		return -1;
 	}
+	
+	public static URL getUrlOfClass(Class c) {
+	    if(c==null) {
+	      throw new NullPointerException();
+	    }
+	    String className = c.getName();
+	    String resourceName = className.replace('.', '/') + ".class";
+	    ClassLoader classLoader = c.getClassLoader();
+	    if(classLoader==null) {
+	      classLoader = ClassLoader.getSystemClassLoader();
+	    }
+	    URL url = classLoader.getResource(resourceName);
+	    return url;
+	  }
+	
+	
+	public static String getApplicationDirectory() throws Exception {
+	    String className = AntMain.class.getName();
+	    String resourceName = className.replace('.', '/') + ".class";
+	    ClassLoader classLoader = AntMain.class.getClassLoader();
+	    if(classLoader==null) {
+	      classLoader = ClassLoader.getSystemClassLoader();
+	    }
+	    URL url = classLoader.getResource(resourceName);
+		
+		String szUrl = url.toString();
+	    if(szUrl.startsWith("jar:file:")) {
+	        szUrl = szUrl.substring("jar:".length(), szUrl.lastIndexOf("!"));
+	        URI uri = new URI(szUrl);
+	        return (new File(uri)).getParent();
+
+	    } else if(szUrl.startsWith("file:")) {
+	        szUrl = szUrl.substring(0, szUrl.length() - resourceName.length());
+	        URI uri = new URI(szUrl);
+	        return (new File(uri)).getParent();
+	    }
+		return null;		
+	}
+	
+	
 	public static int getComponentIndex(JComponent tabby,Component child) {
 		for (int i=0;i<tabby.getComponentCount();i++) {
 			if (tabby.getComponent(i).equals(child)) {
@@ -119,5 +162,41 @@ public class Utility {
 		for (Component c:v) {
 			panel.add(c);
 		}
+	}
+	public static String[] addToArray(String[] args, String string) {
+		
+		String[] na=null;
+		if (args==null) {
+			na=new String[1];
+			na[0]=string;
+		} else {
+			na=new String[args.length+1];
+			for (int i=0;i<args.length;i++) {
+				na[i]=args[i];
+			}
+			na[args.length]=string;
+		}
+		return na;
+	}
+	public static String joinArray(String[] args, String delim) {
+		String s="";
+		for (int i=0;i<args.length;i++) {
+			if (i!=0) {
+				s=s+delim;
+			}
+			s=s+args[i];
+		}
+		return s;
+	}
+	public static String[] removeIndexFromArray(String[] args, int ri) {
+		String[] newargs=new String[args.length-1];
+		int ni=0;
+		for (int i=0;i<args.length;i++) {
+			if (ri!=i) {
+				newargs[ni]=args[i];
+				++ni;
+			}
+		}
+		return newargs;
 	}
 }

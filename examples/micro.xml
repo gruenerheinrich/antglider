@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<config>
+<panel caption="test" icon="">
+<buildfile>D:\Projekte\testsuite\example_testcases\helloworld.xml</buildfile>
+<buildfile>D:\Projekte\antrunner\examples\build.xml</buildfile>
+<buildfile>D:\Projekte\antrunner\examples\javascript.xml</buildfile>
+</panel>
+</config>
