@@ -318,4 +318,9 @@ public class AntRunnerNode extends DefaultMutableTreeNode implements BuildListen
 	public boolean isTarget() {
 		return(getMode()==AntRunnerNode.MODE_STANDALONETARGET || getMode()==AntRunnerNode.MODE_TARGET || getMode()==AntRunnerNode.MODE_DEFAULTTARGET);
 	}
+	public void loadStatistics() {
+		if (this.statistics==null) {
+			this.statistics=this.antrunner.getStatistics(this);
+		}
+	}
 }
